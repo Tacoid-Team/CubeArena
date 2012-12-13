@@ -9,7 +9,6 @@ import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Matrix4;
 import com.tacoid.cubearena.Actor3d;
 import com.tacoid.cubearena.Cube;
-import com.tacoid.cubearena.CubeArena;
 import com.tacoid.cubearena.Direction;
 import com.tacoid.cubearena.screens.GameScreen;
 

@@ -1,11 +1,10 @@
 package com.tacoid.cubearena.tiles;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.math.Matrix4;
 import com.tacoid.cubearena.Cube;
+import com.tacoid.cubearena.CubeArena;
 import com.tacoid.cubearena.Cube.State;
 
 
@@ -16,7 +15,7 @@ public class EmptyTile extends Tile {
 	EmptyTile() {
 		super();
 		this.type = TileType.EMPTY;
-		emptyTexture = new Texture(Gdx.files.internal("textures/empty-tile.png"), Format.RGBA4444, true);
+		emptyTexture = CubeArena.getInstance().manager.get("textures/empty-tile.png", Texture.class);
 	}
 
 	public void render(Matrix4 t, float delta) {

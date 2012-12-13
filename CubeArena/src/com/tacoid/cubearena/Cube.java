@@ -6,7 +6,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.g3d.loaders.obj.ObjLoader;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Matrix4;
@@ -46,7 +45,7 @@ public class Cube implements Actor3d {
 		shader = GameScreen.getTextureShader();
 		
 		/* Texture loading */
-		texture = new Texture(Gdx.files.internal("textures/cube.png"), Format.RGBA4444, true);
+		texture = CubeArena.getInstance().manager.get("textures/cube.png", Texture.class);
 		
 		/* Mesh loading */
 		InputStream in = Gdx.files.internal("data/cube.obj").read();

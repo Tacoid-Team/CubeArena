@@ -1,11 +1,10 @@
 package com.tacoid.cubearena.tiles;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.math.Matrix4;
 import com.tacoid.cubearena.Cube;
+import com.tacoid.cubearena.CubeArena;
 import com.tacoid.cubearena.Direction;
 import com.tacoid.cubearena.Cube.State;
 
@@ -16,7 +15,8 @@ public class ChangeTile extends Tile {
 	public ChangeTile() {
 		super();
 		this.type = TileType.CHANGE_DIRECTION;
-		changeTexture = new Texture(Gdx.files.internal("textures/change-tile.png"), Format.RGBA4444, true);
+		CubeArena.getInstance().manager.get("textures/change-tile.png", Texture.class);
+		changeTexture = CubeArena.getInstance().manager.get("textures/change-tile.png", Texture.class);
 	}
 
 	@Override

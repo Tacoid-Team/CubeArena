@@ -1,11 +1,10 @@
 package com.tacoid.cubearena.tiles;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.math.Matrix4;
 import com.tacoid.cubearena.Cube;
+import com.tacoid.cubearena.CubeArena;
 
 
 public class PushTile extends Tile {
@@ -14,7 +13,7 @@ public class PushTile extends Tile {
 	public PushTile() {
 		super();
 		this.type = TileType.PUSH;
-		pushTexture = new Texture(Gdx.files.internal("textures/push-tile.png"), Format.RGBA4444, true);
+		pushTexture = CubeArena.getInstance().manager.get("textures/push-tile.png", Texture.class);
 	}
 	@Override
 	public void render(Matrix4 t, float delta) {

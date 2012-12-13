@@ -1,11 +1,10 @@
 package com.tacoid.cubearena.tiles;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.math.Matrix4;
 import com.tacoid.cubearena.Cube;
+import com.tacoid.cubearena.CubeArena;
 
 
 public class EndTile extends Tile {
@@ -14,7 +13,7 @@ public class EndTile extends Tile {
 	public EndTile() {
 		super();
 		this.type = TileType.END;
-		endTexture = new Texture(Gdx.files.internal("textures/end-tile.png"), Format.RGBA4444, true);
+		endTexture = CubeArena.getInstance().manager.get("textures/end-tile.png", Texture.class);
 	}
 	@Override
 	public void render(Matrix4 t, float delta) {

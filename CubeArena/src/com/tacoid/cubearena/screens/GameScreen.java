@@ -6,18 +6,16 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.utils.GdxRuntimeException;
-import com.tacoid.cubearena.Cube;
 import com.tacoid.cubearena.GameLogic;
-import com.tacoid.cubearena.Level;
-import com.tacoid.cubearena.Cube.State;
 import com.tacoid.cubearena.LevelFactory;
 
 public class GameScreen implements Screen,InputProcessor {

@@ -1,11 +1,10 @@
 package com.tacoid.cubearena.tiles;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.math.Matrix4;
 import com.tacoid.cubearena.Cube;
+import com.tacoid.cubearena.CubeArena;
 import com.tacoid.cubearena.Cube.State;
 
 public class NoTile extends Tile {
@@ -14,7 +13,7 @@ public class NoTile extends Tile {
 	public NoTile() {
 		super();
 		this.type = TileType.NO_TILE;
-		noTileTexture = new Texture(Gdx.files.internal("textures/no-tile.png"), Format.RGBA4444, true);
+		noTileTexture = CubeArena.getInstance().manager.get("textures/no-tile.png", Texture.class);
 	}
 
 	@Override

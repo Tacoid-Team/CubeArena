@@ -1,11 +1,10 @@
 package com.tacoid.cubearena.tiles;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.math.Matrix4;
 import com.tacoid.cubearena.Cube;
+import com.tacoid.cubearena.CubeArena;
 import com.tacoid.cubearena.Cube.State;
 
 
@@ -15,7 +14,7 @@ public class RotRightTile extends Tile {
 	public RotRightTile() {
 		super();
 		this.type = TileType.ROTATE_RIGHT;
-		rotRightTexture = new Texture(Gdx.files.internal("textures/rotright-tile.png"), Format.RGBA4444, true);
+		rotRightTexture = CubeArena.getInstance().manager.get("textures/rotright-tile.png", Texture.class);
 	}
 	@Override
 	public void render(Matrix4 t, float delta) {

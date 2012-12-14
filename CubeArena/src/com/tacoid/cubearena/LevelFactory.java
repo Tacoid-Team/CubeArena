@@ -1,6 +1,16 @@
 package com.tacoid.cubearena;
 
 public class LevelFactory {
+	/*
+	SOUTH<==>NORTH
+	
+	 WEST
+	 ^
+	 |
+	 v
+	 EAST
+	 
+	 */
 	static int __level[][] = {
 			{2,1,1,1,1,1,1},
 			{0,0,0,0,0,0,1},

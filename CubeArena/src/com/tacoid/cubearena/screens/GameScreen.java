@@ -20,6 +20,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.tacoid.cubearena.GameLogic;
+import com.tacoid.cubearena.Level.LevelState;
 import com.tacoid.cubearena.LevelFactory;
 
 public class GameScreen implements Screen,InputProcessor {
@@ -122,8 +123,9 @@ public class GameScreen implements Screen,InputProcessor {
 			break;
 		case SHOWING_LEVEL:
 			
-			/* si le niveau a fini de s'afficher: */
-			state = GameState.IDLE;
+			if(logic.getLevel().getState() == LevelState.READY) {
+				state = GameState.IDLE;
+			}
 			break;
 		case IDLE:
 			/* Si on a selection un type de tile à poser avec un boutton */

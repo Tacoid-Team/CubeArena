@@ -13,16 +13,14 @@ import com.tacoid.cubearena.tiles.TileFactory;
 import com.tacoid.cubearena.tiles.TileType;
 
 public class Level implements Actor3d {
-	/*
-	SOUTH<==>NORTH
 	
-	 WEST
-	 ^
-	 |
-	 v
-	 EAST
-	 
-	 */
+	public enum LevelState {
+		BUSY,
+		READY
+	};
+	
+	private LevelState state;
+	
 	public Tile[][] level; 
 	public LevelData levelData;
 	
@@ -32,6 +30,7 @@ public class Level implements Actor3d {
 	public Tile tp2;
 
 	public Level(LevelData ld) {
+		setState(LevelState.BUSY);
 		levelData = ld;
 		this.level = new Tile[levelData.dimX][levelData.dimY];
 		start = null;
@@ -121,6 +120,14 @@ public class Level implements Actor3d {
 
 	public void setTp2(Tile tp2) {
 		this.tp2 = tp2;
+	}
+
+	public LevelState getState() {
+		return state;
+	}
+
+	public void setState(LevelState state) {
+		this.state = state;
 	}
 
 }

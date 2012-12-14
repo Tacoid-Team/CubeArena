@@ -11,6 +11,6 @@ public class Main {
 		cfg.width = 1280;
 		cfg.height = 768;
 		
-		new LwjglApplication(new CubeArena(), cfg);
+		new LwjglApplication(CubeArena.getInstance(), cfg);
 	}
 }

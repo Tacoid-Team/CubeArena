@@ -35,15 +35,17 @@ public class GameLogic {
         	   cube.getY() >= 0 && cube.getY() < level.level[0].length) {
         		Tile currentTile = level.level[cube.getX()][cube.getY()];
         		currentTile.react(cube);
-        	}
-        }
+        	} else {
+            	cube.setState(State.FALLING);
+            }
+        } 
         
 	}
 	
 	public void loadLevel(LevelData level) {
 		this.level = new Level(level);
 		state = GameState.IDLE;
-		cube.setDirection(Direction.EAST);
+		cube.setDirection(level.initDir);
 		this.level.initCube(cube);
 	}
 

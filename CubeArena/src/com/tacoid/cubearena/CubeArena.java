@@ -44,6 +44,7 @@ public class CubeArena extends Game {
 		manager.load("textures/rotright-tile.png", Texture.class);
 		manager.load("textures/start-tile.png", Texture.class);
 		manager.load("textures/teleport-tile.png", Texture.class);
-		manager.load("textures/cube.png", Texture.class);		
+		manager.load("textures/cube.png", Texture.class);
+		manager.load("textures/button-9patch.png", Texture.class);	
 	}
 }

@@ -3,9 +3,11 @@ package com.tacoid.cubearena.screens;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -14,6 +16,8 @@ import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.tacoid.cubearena.GameLogic;
 import com.tacoid.cubearena.LevelFactory;
@@ -29,6 +33,22 @@ public class GameScreen implements Screen,InputProcessor {
 	
 	/* 2D Part */
 	Stage stage;
+	
+	enum GameState {
+		INIT,
+		SHOWING_BUTTONS,
+		SHOWING_LEVEL,
+		IDLE,
+		PLACING_TILE,
+		CHOSING_DIRECTION,
+		LAUNCHING,
+		RUNNING,
+		WIN,
+		LOSE,
+		QUIT
+	};
+	
+	GameState state;
 
 	static private GameScreen instance = null;
 	
@@ -38,23 +58,12 @@ public class GameScreen implements Screen,InputProcessor {
 		}
 		return instance;
 	}
-	class TestActor extends Actor {
-		Sprite s;
-		TestActor(){
-			s = new Sprite(new Texture(Gdx.files.internal("textures/change-tile.png")));
-		}
-		
-		@Override
-		public void draw(SpriteBatch batch, float parentAlpha) {
-			s.draw(batch);
+	static class DoneButton extends TextButton{
+	
+		public DoneButton(String text, TextButtonStyle style) {
+			super("Done", style);
 		}
 
-		@Override
-		public Actor hit(float x, float y) {
-			// TODO Auto-generated method stub
-			return null;
-		}
-		
 	}
 	
 	private GameScreen() {
@@ -64,7 +73,14 @@ public class GameScreen implements Screen,InputProcessor {
 		cam = new OrthographicCamera(12, 12*768.0f/1280.0f ,35.264f);	
 		cam.translate(-2.0f, 5.0f, 2.0f);
 		
-		stage.addActor( new TestActor() );
+		BitmapFont font = new BitmapFont();
+		font.scale(2.0f);
+		NinePatch patch =  new NinePatch(new Texture(Gdx.files.internal("textures/button.9.png")), 2,12, 2, 12);
+		TextButtonStyle style = new TextButtonStyle(patch, patch, patch, 
+											       0, 0, 0, 0, 
+											       font, new Color(0.0f, 0.0f, 0.0f, 1f), new Color(1.0f, 0, 0, 1f), new Color(1.0f, 0, 0, 1f));
+		
+		stage.addActor( new DoneButton("done", style) );
 
 		textureShader = new ShaderProgram(Gdx.files.internal("shaders/tex-vs.glsl"),
 										  Gdx.files.internal("shaders/tex-fs.glsl"));
@@ -78,6 +94,7 @@ public class GameScreen implements Screen,InputProcessor {
 		Gdx.graphics.getGL20().glBlendFunc (GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
 		
 		Gdx.input.setInputProcessor(this);
+		state = GameState.INIT;
 	}
 
 	@Override
@@ -92,6 +109,58 @@ public class GameScreen implements Screen,InputProcessor {
         cam.update();
         
         transform.set(cam.combined);
+        
+        /* Game state machine */
+        switch(state) {
+        case INIT:
+        	/*TODO show buttons */
+        	state = GameState.SHOWING_BUTTONS;
+			break;
+		case SHOWING_BUTTONS:
+			/* TODO show level */
+			state = GameState.SHOWING_LEVEL;
+			break;
+		case SHOWING_LEVEL:
+			
+			/* si le niveau a fini de s'afficher: */
+			state = GameState.IDLE;
+			break;
+		case IDLE:
+			/* Si on a selection un type de tile à poser avec un boutton */
+				//state = GameState.PLACING_TILE;
+			/* Si on a cliqué sur "Done" */
+				/* Level.setState(LAUCHING) */
+				state = GameState.LAUNCHING;
+			break;
+		case PLACING_TILE:
+			/* Si la tile est placée */
+				/* Si la tile nécessite d'être orientée */
+					/* state = GameState.CHOSING_DIRECTION */
+				/* Sinon */
+					state = GameState.IDLE;
+			break;
+		case CHOSING_DIRECTION:
+			/* Si la direction est choisie */
+			/* Animer l'apparition de la tile*/
+			state = GameState.IDLE;
+			break;
+		case LAUNCHING:
+			
+			break;
+		case LOSE:
+			break;
+
+		case QUIT:
+			break;
+		case RUNNING:
+			break;
+
+		
+		case WIN:
+			break;
+        
+        }
+        
         
         logic.update();
         

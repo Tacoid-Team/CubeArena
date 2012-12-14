@@ -3,13 +3,15 @@ package com.tacoid.cubearena.tiles;
 public enum TileType {
 	NO_TILE(0),
 	EMPTY(1),
-	CHANGE_DIRECTION(2),
-	ROTATE_RIGHT(3),
-	ROTATE_LEFT(4),
-	PUSH(5),
-	TELEPORT(6),
-	START(10),
-	END(11);
+	START(2),
+	END(3),
+	CHANGE_DIRECTION(4),
+	ROTATE_RIGHT(5),
+	ROTATE_LEFT(6),
+	PUSH(7),
+	TELEPORT(8);
+	
+	
 	
 	final int value;
 	

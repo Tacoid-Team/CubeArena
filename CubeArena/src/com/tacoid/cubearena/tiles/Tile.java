@@ -37,7 +37,7 @@ public abstract class Tile implements Actor3d {
 		this.y = 0;
 		this.z = 0.0f;
 		this.t = 0.0f;
-		speed = new Random().nextFloat()*1.2f;
+		speed = new Random().nextFloat()*0.7f + 0.5f;
 		this.setState(TileState.APPEARING);
 		this.direction = Direction.NORTH;
 		
@@ -52,12 +52,14 @@ public abstract class Tile implements Actor3d {
 	abstract public void react(Cube cube);
 	
 	protected void update(float delta) {
-		t+=delta/speed;
+		
 		switch(getState()) {
 		case APPEARING:
+			t+=delta/speed;
 			z = 5.0f*t-5;
 			if(t >= 1.0f) {
 				setState(TileState.IDLE);
+				t = 0;
 				z = 0.0f;
 			}
 			break;

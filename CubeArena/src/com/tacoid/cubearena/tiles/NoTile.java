@@ -14,6 +14,7 @@ public class NoTile extends Tile {
 		super();
 		this.type = TileType.NO_TILE;
 		noTileTexture = CubeArena.getInstance().manager.get("textures/no-tile.png", Texture.class);
+		this.setState(TileState.IDLE);
 	}
 
 	@Override

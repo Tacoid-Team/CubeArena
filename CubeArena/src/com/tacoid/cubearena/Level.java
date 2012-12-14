@@ -2,6 +2,7 @@ package com.tacoid.cubearena;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.tiled.TileSet;
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Plane;
@@ -11,6 +12,7 @@ import com.tacoid.cubearena.Cube.State;
 import com.tacoid.cubearena.tiles.Tile;
 import com.tacoid.cubearena.tiles.TileFactory;
 import com.tacoid.cubearena.tiles.TileType;
+import com.tacoid.cubearena.tiles.Tile.TileState;
 
 public class Level implements Actor3d {
 	
@@ -57,10 +59,18 @@ public class Level implements Actor3d {
 	
 	@Override
 	public void render(Matrix4 transform, float delta) {
+		boolean busy = false;
 		for(int i=0; i<level.length; i++) {
 			for(int j=0; j<level[i].length; j++) {
+				if(level[i][j].getState() != TileState.IDLE) {
+					busy = true;
+				}
 				level[i][j].render(transform, delta);
 			}
+		}
+		
+		if(!busy) {
+			state = LevelState.READY;
 		}
 	}
 	

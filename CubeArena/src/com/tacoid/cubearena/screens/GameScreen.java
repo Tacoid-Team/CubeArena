@@ -9,16 +9,15 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
-import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Button;
+import com.badlogic.gdx.scenes.scene2d.ui.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.tacoid.cubearena.Cube.State;
 import com.tacoid.cubearena.GameLogic;
 import com.tacoid.cubearena.Level.LevelState;
 import com.tacoid.cubearena.LevelFactory;
@@ -35,7 +34,7 @@ public class GameScreen implements Screen,InputProcessor {
 	/* 2D Part */
 	Stage stage;
 	
-	enum GameState {
+	public enum GameState {
 		INIT,
 		SHOWING_BUTTONS,
 		SHOWING_LEVEL,
@@ -49,7 +48,8 @@ public class GameScreen implements Screen,InputProcessor {
 		QUIT
 	};
 	
-	GameState state;
+	private GameState state;
+	private boolean startPressed;
 
 	static private GameScreen instance = null;
 	
@@ -59,12 +59,17 @@ public class GameScreen implements Screen,InputProcessor {
 		}
 		return instance;
 	}
-	static class DoneButton extends TextButton{
+	class DoneButton extends TextButton{
 	
 		public DoneButton(String text, TextButtonStyle style) {
 			super("Done", style);
+			setClickListener(new ClickListener() {
+				@Override
+				public void click(Actor actor, float x, float y) {
+					startPressed = true;
+				}
+			});
 		}
-
 	}
 	
 	private GameScreen() {
@@ -95,12 +100,15 @@ public class GameScreen implements Screen,InputProcessor {
 		Gdx.graphics.getGL20().glBlendFunc (GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
 		
 		Gdx.input.setInputProcessor(this);
-		state = GameState.INIT;
+		setState(GameState.INIT);
+		stage.act(Gdx.graphics.getDeltaTime());
+		
+		startPressed = false;
 	}
 
 	@Override
 	public void render(float delta) {
-		
+		boolean showCube = false;
         Gdx.graphics.getGL20().glClearColor(0.69453125f, 0.690625f, 0.6828125f, 1);
         Gdx.graphics.getGL20().glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
         Gdx.graphics.getGL20().glEnable(GL20.GL_CULL_FACE);
@@ -112,19 +120,22 @@ public class GameScreen implements Screen,InputProcessor {
         transform.set(cam.combined);
         
         /* Game state machine */
-        switch(state) {
+        switch(getState()) {
         case INIT:
         	/*TODO show buttons */
-        	state = GameState.SHOWING_BUTTONS;
+        	System.out.println("new state: Showing buttons");
+        	setState(GameState.SHOWING_BUTTONS);
 			break;
 		case SHOWING_BUTTONS:
 			/* TODO show level */
-			state = GameState.SHOWING_LEVEL;
+			System.out.println("new state: Showing level");
+			setState(GameState.SHOWING_LEVEL);
 			break;
 		case SHOWING_LEVEL:
 			
 			if(logic.getLevel().getState() == LevelState.READY) {
-				state = GameState.IDLE;
+				System.out.println("new state: Idle");
+				setState(GameState.IDLE);
 			}
 			break;
 		case IDLE:
@@ -132,22 +143,32 @@ public class GameScreen implements Screen,InputProcessor {
 				//state = GameState.PLACING_TILE;
 			/* Si on a cliqué sur "Done" */
 				/* Level.setState(LAUCHING) */
-				state = GameState.LAUNCHING;
+			if(startPressed) {
+				System.out.println("new state: Lauching");
+				logic.getCube().setState(State.APPEARING); 
+				setState(GameState.LAUNCHING);
+			}
 			break;
 		case PLACING_TILE:
 			/* Si la tile est placée */
 				/* Si la tile nécessite d'être orientée */
 					/* state = GameState.CHOSING_DIRECTION */
 				/* Sinon */
-					state = GameState.IDLE;
+			System.out.println("new state: Idle");
+					setState(GameState.IDLE);
 			break;
 		case CHOSING_DIRECTION:
 			/* Si la direction est choisie */
 			/* Animer l'apparition de la tile*/
-			state = GameState.IDLE;
+			setState(GameState.IDLE);
 			break;
 		case LAUNCHING:
-			
+			showCube = true;
+			if(logic.getCube().getState() == State.IDLE) {
+				state = GameState.RUNNING;
+				System.out.println("new state: Running");
+				logic.getCube().setState(State.ROLLING);
+			}
 			break;
 		case LOSE:
 			break;
@@ -155,6 +176,7 @@ public class GameScreen implements Screen,InputProcessor {
 		case QUIT:
 			break;
 		case RUNNING:
+			showCube = true;
 			break;
 
 		
@@ -162,13 +184,17 @@ public class GameScreen implements Screen,InputProcessor {
 			break;
         
         }
+        startPressed = false;
         
         
         logic.update();
         
         logic.getLevel().checkTileTouched(cam);
 
-        logic.getCube().render(transform, delta);
+        if(showCube) {
+        	logic.getCube().render(transform, delta);
+        }
+        
         logic.getLevel().render(transform, delta);
         
         Gdx.graphics.getGL20().glDisable(GL20.GL_CULL_FACE);
@@ -237,18 +263,22 @@ public class GameScreen implements Screen,InputProcessor {
 
 	@Override
 	public boolean touchDown(int x, int y, int pointer, int button) {
-		// TODO Auto-generated method stub
-		return false;
+		return stage.touchDown(x, y, pointer, button);
 	}
+
+	@Override
+	public boolean touchDragged(int arg0, int arg1, int arg2) {
+		return stage.touchDragged(arg0, arg1, arg2);
+	}
+
 
 	@Override
 	public boolean touchUp(int x, int y, int pointer, int button) {
-		// TODO Auto-generated method stub
-		return false;
+		return stage.touchUp(x, y, pointer, button);
 	}
 
 	@Override
-	public boolean touchDragged(int x, int y, int pointer) {
+	public boolean scrolled(int amount) {
 		// TODO Auto-generated method stub
 		return false;
 	}
@@ -259,10 +289,12 @@ public class GameScreen implements Screen,InputProcessor {
 		return false;
 	}
 
-	@Override
-	public boolean scrolled(int amount) {
-		// TODO Auto-generated method stub
-		return false;
+	public GameState getState() {
+		return state;
+	}
+
+	public void setState(GameState state) {
+		this.state = state;
 	}
 
 }

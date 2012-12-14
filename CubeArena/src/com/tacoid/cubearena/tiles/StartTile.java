@@ -19,6 +19,7 @@ public class StartTile extends Tile {
 	@Override
 	public void render(Matrix4 t, float delta) {
 		Matrix4 transform = new Matrix4(t);
+		this.update(delta);
         shader.begin();
         {
 	        shader.setUniformi("u_diffuse", 0);

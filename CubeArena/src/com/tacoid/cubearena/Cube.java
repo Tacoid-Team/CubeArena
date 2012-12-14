@@ -73,6 +73,8 @@ public class Cube implements Actor3d {
 				animFalling(transform, delta);
 				break;
 			case APPEARING:
+				animAppearing(transform, delta);
+				break;
 			case IDLE:
 			case STRAFFING:
 			case VANISHING:
@@ -82,6 +84,17 @@ public class Cube implements Actor3d {
 			mesh.render(shader, GL20.GL_TRIANGLES);
         }
 		shader.end();
+	}
+	
+	private void animAppearing(Matrix4 transform, float delta) {
+		t+=0.02f;
+        //transform.rotate(new Vector3(0, 1, 0), t*360.0f);
+        //transform.translate(new Vector3(0, 10.0f-t*10.0f, 0.0f));
+		transform.scale(t,t,t);
+		if(t > 1.0f) {
+			t = 0;
+			state = State.IDLE;
+		}
 	}
 	
 	private void animFalling(Matrix4 transform, float delta) {

@@ -8,6 +8,8 @@ import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.g3d.loaders.obj.ObjLoader;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Matrix4;
+import com.badlogic.gdx.scenes.scene2d.Interpolator;
+import com.badlogic.gdx.scenes.scene2d.interpolators.OvershootInterpolator;
 import com.tacoid.cubearena.Actor3d;
 import com.tacoid.cubearena.Cube;
 import com.tacoid.cubearena.Direction;
@@ -25,6 +27,8 @@ public abstract class Tile implements Actor3d {
 	Direction direction;
 	int x,y;
 	float z;
+	
+	Interpolator interp;
 	float t;
 	float speed;
 	
@@ -37,7 +41,8 @@ public abstract class Tile implements Actor3d {
 		this.y = 0;
 		this.z = 0.0f;
 		this.t = 0.0f;
-		speed = new Random().nextFloat()*0.7f + 0.5f;
+		speed = 1.5f*(new Random().nextFloat()*0.6f + 0.7f);
+		interp = OvershootInterpolator.$(2.0f);
 		this.setState(TileState.APPEARING);
 		this.direction = Direction.NORTH;
 		
@@ -56,7 +61,8 @@ public abstract class Tile implements Actor3d {
 		switch(getState()) {
 		case APPEARING:
 			t+=delta/speed;
-			z = 5.0f*t-5;
+			z = 8*interp.getInterpolation(t)-8; 
+			//z = 5.0f*t-5;
 			if(t >= 1.0f) {
 				setState(TileState.IDLE);
 				t = 0;

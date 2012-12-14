@@ -31,6 +31,7 @@ public class Cube implements Actor3d {
 	private State state;
 	private Direction direction;
 	private float t = 0.0f;
+	private boolean visible;
 	
 	/* Rendering data */
 	private ShaderProgram shader;
@@ -43,6 +44,7 @@ public class Cube implements Actor3d {
 		state = State.IDLE;
 		direction = Direction.EAST;
 		shader = GameScreen.getTextureShader();
+		setVisible(false);
 		
 		/* Texture loading */
 		texture = CubeArena.getInstance().manager.get("textures/cube.png", Texture.class);
@@ -54,42 +56,42 @@ public class Cube implements Actor3d {
 	}
 	
 	public void render(Matrix4 t, float delta) {
-		Matrix4 transform = new Matrix4(t);
-        shader.begin();
-        {
-	        texture.bind();
-	        transform.translate(x, 0.0f, -y);
-			switch(state) {
-			case ROLLING:
-				animRolling(transform, delta);
-				break;
-			case ROTATE_LEFT:
-				animRotate(transform, delta, true);
-				break;
-			case ROTATE_RIGHT:
-				animRotate(transform, delta, false);
-				break;
-			case FALLING:
-				animFalling(transform, delta);
-				break;
-			case APPEARING:
-				animAppearing(transform, delta);
-				break;
-			case IDLE:
-			case STRAFFING:
-			case VANISHING:
-				break;
-			}
-			shader.setUniformMatrix("u_projView", transform);
-			mesh.render(shader, GL20.GL_TRIANGLES);
-        }
-		shader.end();
+		if(visible) {
+			Matrix4 transform = new Matrix4(t);
+	        shader.begin();
+	        {
+		        texture.bind();
+		        transform.translate(x, 0.0f, -y);
+				switch(state) {
+				case ROLLING:
+					animRolling(transform, delta);
+					break;
+				case ROTATE_LEFT:
+					animRotate(transform, delta, true);
+					break;
+				case ROTATE_RIGHT:
+					animRotate(transform, delta, false);
+					break;
+				case FALLING:
+					animFalling(transform, delta);
+					break;
+				case APPEARING:
+					animAppearing(transform, delta);
+					break;
+				case IDLE:
+				case STRAFFING:
+				case VANISHING:
+					break;
+				}
+				shader.setUniformMatrix("u_projView", transform);
+				mesh.render(shader, GL20.GL_TRIANGLES);
+	        }
+			shader.end();
+		}
 	}
 	
 	private void animAppearing(Matrix4 transform, float delta) {
 		t+=0.02f;
-        //transform.rotate(new Vector3(0, 1, 0), t*360.0f);
-        //transform.translate(new Vector3(0, 10.0f-t*10.0f, 0.0f));
 		transform.scale(t,t,t);
 		if(t > 1.0f) {
 			t = 0;
@@ -220,6 +222,14 @@ public class Cube implements Actor3d {
 
 	public void setX(int x) {
 		this.x = x;
+	}
+
+	public boolean isVisible() {
+		return visible;
+	}
+
+	public void setVisible(boolean visible) {
+		this.visible = visible;
 	}
 
 }

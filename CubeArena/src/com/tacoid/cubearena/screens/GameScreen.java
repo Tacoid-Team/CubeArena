@@ -17,9 +17,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 import com.badlogic.gdx.utils.GdxRuntimeException;
-import com.tacoid.cubearena.Cube.State;
 import com.tacoid.cubearena.GameLogic;
-import com.tacoid.cubearena.Level.LevelState;
 import com.tacoid.cubearena.LevelFactory;
 
 public class GameScreen implements Screen,InputProcessor {
@@ -33,23 +31,6 @@ public class GameScreen implements Screen,InputProcessor {
 	
 	/* 2D Part */
 	Stage stage;
-	
-	public enum GameState {
-		INIT,
-		SHOWING_BUTTONS,
-		SHOWING_LEVEL,
-		IDLE,
-		PLACING_TILE,
-		CHOSING_DIRECTION,
-		LAUNCHING,
-		RUNNING,
-		WIN,
-		LOSE,
-		QUIT
-	};
-	
-	private GameState state;
-	private boolean startPressed;
 
 	static private GameScreen instance = null;
 	
@@ -66,7 +47,7 @@ public class GameScreen implements Screen,InputProcessor {
 			setClickListener(new ClickListener() {
 				@Override
 				public void click(Actor actor, float x, float y) {
-					startPressed = true;
+					GameLogic.getInstance().start();
 				}
 			});
 		}
@@ -100,15 +81,13 @@ public class GameScreen implements Screen,InputProcessor {
 		Gdx.graphics.getGL20().glBlendFunc (GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
 		
 		Gdx.input.setInputProcessor(this);
-		setState(GameState.INIT);
 		stage.act(Gdx.graphics.getDeltaTime());
 		
-		startPressed = false;
+		//startPressed = false;
 	}
 
 	@Override
 	public void render(float delta) {
-		boolean showCube = false;
         Gdx.graphics.getGL20().glClearColor(0.69453125f, 0.690625f, 0.6828125f, 1);
         Gdx.graphics.getGL20().glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
         Gdx.graphics.getGL20().glEnable(GL20.GL_CULL_FACE);
@@ -119,82 +98,12 @@ public class GameScreen implements Screen,InputProcessor {
         
         transform.set(cam.combined);
         
-        /* Game state machine */
-        switch(getState()) {
-        case INIT:
-        	/*TODO show buttons */
-        	System.out.println("new state: Showing buttons");
-        	setState(GameState.SHOWING_BUTTONS);
-			break;
-		case SHOWING_BUTTONS:
-			/* TODO show level */
-			System.out.println("new state: Showing level");
-			setState(GameState.SHOWING_LEVEL);
-			break;
-		case SHOWING_LEVEL:
-			
-			if(logic.getLevel().getState() == LevelState.READY) {
-				System.out.println("new state: Idle");
-				setState(GameState.IDLE);
-			}
-			break;
-		case IDLE:
-			/* Si on a selection un type de tile à poser avec un boutton */
-				//state = GameState.PLACING_TILE;
-			/* Si on a cliqué sur "Done" */
-				/* Level.setState(LAUCHING) */
-			if(startPressed) {
-				System.out.println("new state: Lauching");
-				logic.getCube().setState(State.APPEARING); 
-				setState(GameState.LAUNCHING);
-			}
-			break;
-		case PLACING_TILE:
-			/* Si la tile est placée */
-				/* Si la tile nécessite d'être orientée */
-					/* state = GameState.CHOSING_DIRECTION */
-				/* Sinon */
-			System.out.println("new state: Idle");
-					setState(GameState.IDLE);
-			break;
-		case CHOSING_DIRECTION:
-			/* Si la direction est choisie */
-			/* Animer l'apparition de la tile*/
-			setState(GameState.IDLE);
-			break;
-		case LAUNCHING:
-			showCube = true;
-			if(logic.getCube().getState() == State.IDLE) {
-				state = GameState.RUNNING;
-				System.out.println("new state: Running");
-				logic.getCube().setState(State.ROLLING);
-			}
-			break;
-		case LOSE:
-			break;
-
-		case QUIT:
-			break;
-		case RUNNING:
-			showCube = true;
-			break;
-
-		
-		case WIN:
-			break;
-        
-        }
-        startPressed = false;
-        
-        
         logic.update();
         
         logic.getLevel().checkTileTouched(cam);
 
-        if(showCube) {
-        	logic.getCube().render(transform, delta);
-        }
-        
+        logic.getCube().render(transform, delta);
+
         logic.getLevel().render(transform, delta);
         
         Gdx.graphics.getGL20().glDisable(GL20.GL_CULL_FACE);
@@ -209,55 +118,40 @@ public class GameScreen implements Screen,InputProcessor {
 
 	@Override
 	public void resize(int width, int height) {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void show() {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void hide() {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void pause() {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void resume() {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void dispose() {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public boolean keyDown(int keycode) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
 	public boolean keyUp(int keycode) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
 	public boolean keyTyped(char character) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
@@ -279,22 +173,12 @@ public class GameScreen implements Screen,InputProcessor {
 
 	@Override
 	public boolean scrolled(int amount) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
 	public boolean touchMoved(int x, int y) {
-		// TODO Auto-generated method stub
 		return false;
-	}
-
-	public GameState getState() {
-		return state;
-	}
-
-	public void setState(GameState state) {
-		this.state = state;
 	}
 
 }

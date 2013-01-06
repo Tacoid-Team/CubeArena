@@ -205,6 +205,7 @@ public class Cube implements Actor3d {
 	}
 
 	public void setState(State state) {
+		t = 0.0f;
 		this.state = state;
 	}
 

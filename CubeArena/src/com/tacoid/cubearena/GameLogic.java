@@ -3,6 +3,7 @@ package com.tacoid.cubearena;
 import com.tacoid.cubearena.Cube.State;
 import com.tacoid.cubearena.Level.LevelState;
 import com.tacoid.cubearena.tiles.Tile;
+import com.tacoid.cubearena.tiles.TileType;
 
 public class GameLogic {
 
@@ -39,7 +40,12 @@ public class GameLogic {
 	
 	private Level level = null;
 	private Cube cube = null;
+	private Inventory inventory = null;
 	
+	public Inventory getInventory() {
+		return inventory;
+	}
+
 	private GameLogic() {
 		cube = new Cube();
 	}
@@ -108,6 +114,7 @@ public class GameLogic {
 	        }
 	        if(command == GameCommand.STOP) {
 	        	getLevel().initCube(cube);
+	        	getCube().setVisible(false);
 	        	state = GameState.IDLE;
 	        }
 			break;
@@ -125,10 +132,13 @@ public class GameLogic {
 		command = GameCommand.STOP;
 	}
 	
-	public void loadLevel(LevelData level) {
-		this.level = new Level(level);
-		cube.setDirection(level.initDir);
-		this.level.initCube(cube);
+	public void loadLevel(LevelData newLevel) {
+		cube.setDirection(newLevel.initDir);
+		level = new Level(newLevel);
+		level.initCube(cube);
+		inventory = new Inventory();
+		inventory.addTile(TileType.CHANGE_DIRECTION, 3);
+		inventory.addTile(TileType.ROTATE_RIGHT, 2);
 		state = GameState.IDLE;
 		command = GameCommand.NONE;
 	}

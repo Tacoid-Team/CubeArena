@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Matrix4;
 import com.tacoid.cubearena.Cube;
 import com.tacoid.cubearena.CubeArena;
+import com.tacoid.cubearena.Cube.State;
 
 
 public class PushTile extends Tile {
@@ -30,8 +31,8 @@ public class PushTile extends Tile {
 	}
 	@Override
 	public void react(Cube cube) {
-		// TODO Auto-generated method stub
-		
+		cube.setState(State.PUSH);
+		System.out.println(this.direction);
 	}
 
 }

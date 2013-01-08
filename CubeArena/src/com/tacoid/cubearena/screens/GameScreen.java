@@ -32,6 +32,11 @@ public class GameScreen implements Screen,InputProcessor {
 	/* 3D Part */
 	private OrthographicCamera cam;
 	static ShaderProgram textureShader;
+	static ShaderProgram colorShader;
+	public static ShaderProgram getColorShader() {
+		return colorShader;
+	}
+
 	private final Matrix4 transform = new Matrix4();
 	
 	/* 2D Part */
@@ -92,6 +97,8 @@ public class GameScreen implements Screen,InputProcessor {
 
 		textureShader = new ShaderProgram(Gdx.files.internal("shaders/tex-vs.glsl"),
 										  Gdx.files.internal("shaders/tex-fs.glsl"));
+		colorShader = new ShaderProgram(Gdx.files.internal("shaders/color-vs.glsl"),
+				  Gdx.files.internal("shaders/color-fs.glsl"));
 		if (!textureShader.isCompiled()) throw new GdxRuntimeException("Couldn't compile texture shader");
 
 		GameLogic.getInstance().loadLevel(LevelFactory.getLevel(0));
@@ -120,7 +127,7 @@ public class GameScreen implements Screen,InputProcessor {
 
 	@Override
 	public void render(float delta) {
-        Gdx.graphics.getGL20().glClearColor(0.69453125f, 0.690625f, 0.6828125f, 1);
+        Gdx.graphics.getGL20().glClearColor(0.3f, 0.3f, 0.3f, 1);
         Gdx.graphics.getGL20().glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
         Gdx.graphics.getGL20().glEnable(GL20.GL_CULL_FACE);
 		Gdx.graphics.getGL20().glEnable(GL20.GL_BLEND);

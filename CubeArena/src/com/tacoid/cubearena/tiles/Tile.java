@@ -34,6 +34,7 @@ public abstract class Tile implements Actor3d {
 	
 	/* Rendering data */
 	protected ShaderProgram shader;
+	protected ShaderProgram colorShader;
 	protected Mesh mesh;
 	
 	public Tile() {
@@ -47,6 +48,7 @@ public abstract class Tile implements Actor3d {
 		this.direction = Direction.NORTH;
 		
 		shader = GameScreen.getTextureShader();
+		colorShader = GameScreen.getColorShader();
 
 		/* Mesh loading */
 		InputStream in = Gdx.files.internal("data/tile.obj").read();

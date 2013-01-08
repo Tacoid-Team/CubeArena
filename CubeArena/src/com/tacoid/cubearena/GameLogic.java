@@ -132,6 +132,7 @@ public class GameLogic {
 	        	if(cube.getX() >= 0 && cube.getX() < level.level.length &&
 	        	   cube.getY() >= 0 && cube.getY() < level.level[0].length) {
 	        		Tile currentTile = level.level[cube.getX()][cube.getY()];
+	        		cube.setActiveTile(currentTile);
 	        		currentTile.react(cube);
 	        	} else {
 	            	cube.setState(State.FALLING);
@@ -163,7 +164,7 @@ public class GameLogic {
 		level = new Level(newLevel);
 		level.initCube(cube);
 		inventory = new Inventory();
-		inventory.addTile(TileType.CHANGE_DIRECTION, 3);
+		inventory.addTile(TileType.PUSH, 1);
 		inventory.addTile(TileType.ROTATE_RIGHT, 2);
 		
 		selectedType = TileType.EMPTY;

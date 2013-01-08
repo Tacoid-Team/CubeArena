@@ -27,7 +27,7 @@ public class TileButtonFactory {
 		TileType type;
 
 		public TileButton(TileType type, TextButtonStyle style) {
-			super(type.toString(), style);
+			super(String.valueOf("   " + type.getValue())+"   ", style);
 			this.type = type;
 			
 			setClickListener(this);
@@ -51,7 +51,7 @@ public class TileButtonFactory {
 
 	public TileButton createTileButton(TileType type) {
 		BitmapFont font = new BitmapFont();
-		font.scale(1.0f);
+		font.scale(2.0f);
 		NinePatch patch =  new NinePatch(new Texture(Gdx.files.internal("textures/button.9.png")), 2,12, 2, 12);
 		TextButtonStyle style = new TextButtonStyle(patch, patch, patch, 
 											       0, 0, 0, 0, 

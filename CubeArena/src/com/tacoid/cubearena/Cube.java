@@ -11,6 +11,7 @@ import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 import com.tacoid.cubearena.screens.GameScreen;
+import com.tacoid.cubearena.tiles.Tile;
 
 public class Cube implements Actor3d {
 	
@@ -18,7 +19,7 @@ public class Cube implements Actor3d {
 		ROLLING,
 		ROTATE_LEFT,
 		ROTATE_RIGHT,
-		STRAFFING,
+		PUSH,
 		APPEARING,
 		VANISHING,
 		FALLING,
@@ -32,6 +33,7 @@ public class Cube implements Actor3d {
 	private Direction direction;
 	private float t = 0.0f;
 	private boolean visible;
+	private Tile activeTile;
 	
 	/* Rendering data */
 	private ShaderProgram shader;
@@ -52,6 +54,8 @@ public class Cube implements Actor3d {
 		/* Mesh loading */
 		InputStream in = Gdx.files.internal("data/cube.obj").read();
 		mesh = ObjLoader.loadObj(in);
+		
+		setActiveTile(null);
 		
 	}
 	
@@ -78,8 +82,10 @@ public class Cube implements Actor3d {
 				case APPEARING:
 					animAppearing(transform, delta);
 					break;
+				case PUSH:
+					animPush(transform, delta);
+					break;
 				case IDLE:
-				case STRAFFING:
 				case VANISHING:
 					break;
 				}
@@ -120,9 +126,40 @@ public class Cube implements Actor3d {
 		transform.translate(new Vector3(.0f, -0.5f, 0.0f));
 	}
 	
+	private void animPush(Matrix4 transform, float delta) {
+		t+=0.08f;
+		switch(activeTile.getDirection()) {
+		case EAST:
+			transform.translate(t, 0.0f, 0.0f);
+	        if(t > 1.0f)
+	        	x++;
+	        break;
+		case WEST:
+			transform.translate(-t, 0.0f, 0.0f);
+	        if(t > 1.0f)
+	        	x--;
+	        break;
+		case SOUTH:
+			transform.translate(0.0f, 0.0f, t);
+			if(t > 1.0f)
+	        	y--;
+			break;
+		case NORTH:
+			if(t > 1.0f)
+	        	y++;
+			transform.translate(0.0f, 0.0f, -t);
+			break;
+		}
+		
+		if(t > 1.0f) {
+			t = 0f;
+			state = State.IDLE;
+		}
+	}
+	
 	private void animRotate(Matrix4 transform, float delta, boolean left) {
 
-		t+=0.04f;
+		t+=0.08f;
         transform.rotate(new Vector3(0, 1, 0), (left?1:-1)*t*90.0f);
 		if(t > 1.0f) {
 			switch(direction) {
@@ -147,7 +184,7 @@ public class Cube implements Actor3d {
 	private void animRolling(Matrix4 transform, float delta) {
         
         //transform.rotate(new Vector3(1, 0, 0), 90);
-		t+=0.03f;
+		t+=0.05f;
 		
 		switch(direction) {
 		case EAST:
@@ -231,6 +268,14 @@ public class Cube implements Actor3d {
 
 	public void setVisible(boolean visible) {
 		this.visible = visible;
+	}
+
+	public Tile getActiveTile() {
+		return activeTile;
+	}
+
+	public void setActiveTile(Tile activeTile) {
+		this.activeTile = activeTile;
 	}
 
 }

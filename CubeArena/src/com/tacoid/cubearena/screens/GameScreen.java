@@ -11,7 +11,6 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -63,8 +62,7 @@ public class GameScreen implements Screen,InputProcessor {
 		
 		public StopButton(TextButtonStyle style) {
 			super("stop", style);
-			Sprite sprite;
-			
+
 			setClickListener(new ClickListener() {
 				@Override
 				public void click(Actor actor, float x, float y) {

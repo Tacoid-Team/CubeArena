@@ -1,6 +1,5 @@
 package com.tacoid.cubearena;
 
-import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.tacoid.cubearena.Cube.State;
 import com.tacoid.cubearena.Level.LevelState;
@@ -55,6 +54,7 @@ public class GameLogic {
 		cube = new Cube();
 	}
 	
+	@SuppressWarnings("unused")
 	public void update() {
 		getCube().setVisible(false);
         /* Game state machine */

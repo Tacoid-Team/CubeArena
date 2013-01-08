@@ -5,7 +5,9 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
+import com.badlogic.gdx.scenes.scene2d.ui.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 import com.tacoid.cubearena.tiles.TileType;
@@ -21,17 +23,25 @@ public class TileButtonFactory {
 		return instance;
 	}
 
-	public class TileButton extends TextButton{
+	public class TileButton extends TextButton implements ClickListener{
 		
 		TileType type;
 
 		public TileButton(TileType type, TextButtonStyle style) {
 			super(type.toString(), style);
 			this.type = type;
+			
+			setClickListener(this);
 		}
 		
 		void updateText() {
 			this.setText(type.toString());
+		}
+
+		@Override
+		public void click(Actor actor, float x, float y) {
+			GameLogic.getInstance().setSelectedType(type);
+			System.out.println(type.toString());
 		}
 
 	}

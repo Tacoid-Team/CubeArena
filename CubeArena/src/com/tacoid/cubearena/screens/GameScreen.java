@@ -100,7 +100,6 @@ public class GameScreen implements Screen,InputProcessor {
 		
 		
 		/* A faire après l'initialisation de gamelogic, vu que ça se base sur le contenu de l'inventory qui est initialisé dans gamelogic */
-		//table.debug();
 		Set<TileType> set = GameLogic.getInstance().getInventory().getTileList();
 		table.row();
 		for(TileType type : set) {
@@ -135,7 +134,7 @@ public class GameScreen implements Screen,InputProcessor {
         
         logic.update();
         
-        logic.getLevel().checkTileTouched(cam);
+        logic.checkTouch(cam);
 
         logic.getCube().render(transform, delta);
 

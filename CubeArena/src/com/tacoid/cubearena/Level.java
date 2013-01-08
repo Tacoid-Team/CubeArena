@@ -20,11 +20,20 @@ public class Level implements Actor3d {
 		READY
 	};
 	
+	/* Utilisé pour la détection du touché */
+	final Plane xzPlane = new Plane(new Vector3(0, 1, 0), 0);
+	final Vector3 intersection = new Vector3();
+	
+	/* Etat d'animation du niveau */
 	private LevelState state;
 	
+	/* Etat courrant du niveau */
 	public Tile[][] level; 
+	
+	/* Etat initial du niveau, pas sur que ce soit utile de le gardee, sauf si on veut pouvoir rapidement réinitialiser */
 	public LevelData levelData;
 	
+	/* On conserve les références de certaines tiles, comme les End/Start, et les téléporteurs */
 	public Tile start;
 	public Tile end;
 	public Tile tp1;
@@ -56,6 +65,14 @@ public class Level implements Actor3d {
 		}
 	}
 	
+	public void initCube(Cube cube) {
+		if(this.start != null) {
+			cube.setX(start.getX());
+			cube.setY(start.getY());
+			cube.setState(State.IDLE);
+		}
+	}
+	
 	@Override
 	public void render(Matrix4 transform, float delta) {
 		boolean busy = false;
@@ -72,9 +89,7 @@ public class Level implements Actor3d {
 			state = LevelState.READY;
 		}
 	}
-	
-	final Plane xzPlane = new Plane(new Vector3(0, 1, 0), 0);
-	final Vector3 intersection = new Vector3();
+
 	public Tile checkTileTouched(OrthographicCamera cam) {
 		Tile touched = null;
 		if(Gdx.input.justTouched()) {
@@ -84,20 +99,20 @@ public class Level implements Actor3d {
 			int z = (int)(0.5-intersection.z);
 			if(x >= 0 && x < level.length && z >= 0 && z < level[0].length) {
 				touched = level[x][z];
-				level[x][z] = TileFactory.createNewTile(TileType.EMPTY, x, z);
 			}
 		}
 		
 		return touched;
 	}
 	
-	public void initCube(Cube cube) {
-		if(this.start != null) {
-			cube.setX(start.getX());
-			cube.setY(start.getY());
-			cube.setState(State.IDLE);
-		}
+	public void replaceTile(Tile oldTile, TileType newTileType) {
+		int x = oldTile.getX();
+		int y = oldTile.getY();
+		
+		/*XXX: C'est temporaire. En faisant ça, l'ancienne tile disparait instantanément, c'est très laid */
+		level[x][y] = TileFactory.createNewTile(newTileType, x, y);
 	}
+
 	
 	public Tile getStart() {
 		return start;

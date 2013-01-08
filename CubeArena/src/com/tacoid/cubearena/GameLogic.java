@@ -1,5 +1,7 @@
 package com.tacoid.cubearena;
 
+import com.badlogic.gdx.graphics.Camera;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.tacoid.cubearena.Cube.State;
 import com.tacoid.cubearena.Level.LevelState;
 import com.tacoid.cubearena.tiles.Tile;
@@ -38,6 +40,9 @@ public class GameLogic {
 	private GameState state;
 	private GameCommand command;
 	
+	private TileType selectedType;
+	private Tile selectedTile;
+	
 	private Level level = null;
 	private Cube cube = null;
 	private Inventory inventory = null;
@@ -55,40 +60,53 @@ public class GameLogic {
         /* Game state machine */
         switch(getState()) {
         case INIT:
-        	System.out.println("new state: Showing level");
+        	/* Cet état ne fais pas grand chose pour le moment, on passe direct à SHOWING_LEVEL */
         	setState(GameState.SHOWING_LEVEL);
 			break;
 		case SHOWING_LEVEL:
+			/* Cet état sert à attendre que l'animation d'apparition du niveau soit terminée. Dès que c'est le cas, on passe IDLE */
 			if(getLevel().getState() == LevelState.READY) {
-				System.out.println("new state: Idle");
 				setState(GameState.IDLE);
 			}
 			break;
 		case IDLE:
-			/* TODO: Si on a selection un type de tile à poser avec un boutton */
-				//state = GameState.PLACING_TILE;
-
+			/* C'est l'état principal de l'édition du niveau qui consiste à attendre deux évènements:
+			 * - Si le joueur appuis sur "Done", on lance le cube avec l'état START
+			 * - Si le joueur selectionne un type de tile puis une tile, alors on lance le placement de tile avec l'état PLACING_TILE
+			 */
+			
 			if(command == GameCommand.START) {
 				/* TODO: cacher le menu d'édition et afficher le boutton stop */
 				System.out.println("new state: Lauching");
 				getCube().setState(State.APPEARING); 
 				setState(GameState.LAUNCHING);
+			} else if(selectedTile != null) {
+				state = GameState.PLACING_TILE;
 			}
 			break;
 		case PLACING_TILE:
-			/* Si la tile est placée */
-				/* Si la tile nécessite d'être orientée */
-					/* state = GameState.CHOSING_DIRECTION */
-				/* Sinon */
-			System.out.println("new state: Idle");
-					setState(GameState.IDLE);
+			/* Cet état correspond au moment où le joueur place une tile sur le niveau.
+			 * On a besoin de cet état car deux cas sont possible:
+			 * - Soit la tile peut être placée directement, dans ce cas on la place et on reviens Idle
+			 * - Soit la tile nécessite d'être orientée, alors affiche le choix de direction et on passe en état CHOSING_DIRECTION
+			 */
+			if(false) {
+				setState(GameState.CHOSING_DIRECTION);
+			} else {
+				level.replaceTile(selectedTile, selectedType);
+				selectedTile = null;
+				selectedType = TileType.EMPTY;
+				setState(GameState.IDLE);
+			}
 			break;
 		case CHOSING_DIRECTION:
-			/* Si la direction est choisie */
-			/* Animer l'apparition de la tile*/
+			/* Cet état sert à attendre que le joueur choisisse une direction pour la tile qu'il veut placer */
 			setState(GameState.IDLE);
 			break;
 		case LAUNCHING:
+			/* Cette état correpond au moment où l'utilisateur appuis sur le boutton "done" pour lancer le jeu. 
+			 * Avant de lancer vraiment le jeu, on attend que le cube soit IDLE (c'est à dire que son animation d'apparition soit terminée
+			 */
 			getCube().setVisible(true);
 			if(getCube().getState() == State.IDLE) {
 				setState(GameState.RUNNING);
@@ -97,11 +115,18 @@ public class GameLogic {
 			}
 			break;
 		case LOSE:
+			/* Cette état correspond au moment où le cube tombe du niveau. 
+			 * Pas sur qu'il soit nécessaire vu qu'on ne souhaite rien faire de particulier dans ce cas
+			 */
 			break;
-
 		case QUIT:
+			/* Cet état servira si on veut jouer une animation au moment où on quittera la partie */
 			break;
 		case RUNNING:
+			/* L'état principal du jeu quand il est lancé.
+			 * A chaque fois que le cube est en état idle (c'est à dire qu'il a fini son animation), on lance l'animation suivante
+			 * Si on appuis sur "Stop", réinitialise tout pour revenir en état idle
+			 */
 			getCube().setVisible(true);
 	        if(cube.getState() == State.IDLE) {
 	        	if(cube.getX() >= 0 && cube.getX() < level.level.length &&
@@ -119,6 +144,7 @@ public class GameLogic {
 	        }
 			break;
 		case WIN:
+			/* Hell yeah, todo*/
 			break;
         
         }      
@@ -139,6 +165,10 @@ public class GameLogic {
 		inventory = new Inventory();
 		inventory.addTile(TileType.CHANGE_DIRECTION, 3);
 		inventory.addTile(TileType.ROTATE_RIGHT, 2);
+		
+		selectedType = TileType.EMPTY;
+		selectedTile = null;
+		
 		state = GameState.IDLE;
 		command = GameCommand.NONE;
 	}
@@ -157,5 +187,22 @@ public class GameLogic {
 
 	public void setState(GameState state) {
 		this.state = state;
+	}
+
+	public TileType getSelectedType() {
+		return selectedType;
+	}
+
+	public void setSelectedType(TileType selectedType) {
+		this.selectedType = selectedType;
 	}	
+	
+	public void checkTouch(OrthographicCamera cam) {
+		if(state == GameState.IDLE) {
+			Tile t = level.checkTileTouched(cam);
+			if(t != null && t.getType() == TileType.EMPTY && selectedType != TileType.EMPTY) {
+				selectedTile = t;
+			}
+		}
+	}
 }

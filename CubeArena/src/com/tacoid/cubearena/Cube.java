@@ -97,7 +97,7 @@ public class Cube implements Actor3d {
 	}
 	
 	private void animAppearing(Matrix4 transform, float delta) {
-		t+=0.02f;
+		t+=0.04f;
 		transform.scale(t,t,t);
 		if(t > 1.0f) {
 			t = 0;

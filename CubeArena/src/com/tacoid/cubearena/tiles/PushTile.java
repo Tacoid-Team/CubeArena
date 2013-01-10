@@ -18,6 +18,7 @@ public class PushTile extends Tile {
 	}
 	@Override
 	public void render(Matrix4 t, float delta) {
+		drawTileBase(t,delta);
 		Matrix4 transform = new Matrix4(t);
         shader.begin();
         {

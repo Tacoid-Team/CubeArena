@@ -17,13 +17,14 @@ public class EndTile extends Tile {
 	}
 	@Override
 	public void render(Matrix4 t, float delta) {
+		drawTileBase(t,delta);
 		Matrix4 transform = new Matrix4(t);
 		this.update(delta);
         shader.begin();
         {
 	        shader.setUniformi("u_diffuse", 0);
 	        endTexture.bind();
-	        transform.translate(x, 0.0f, -y);
+	        transform.translate(x, this.getZ(), -y);
 			shader.setUniformMatrix("u_projView", transform);
 			mesh.render(shader, GL20.GL_TRIANGLES);
         }

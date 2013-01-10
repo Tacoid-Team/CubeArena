@@ -4,11 +4,14 @@ import java.io.InputStream;
 import java.util.Random;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.g3d.loaders.obj.ObjLoader;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.scenes.scene2d.Interpolator;
+import com.badlogic.gdx.scenes.scene2d.interpolators.DecelerateInterpolator;
 import com.badlogic.gdx.scenes.scene2d.interpolators.OvershootInterpolator;
 import com.tacoid.cubearena.Actor3d;
 import com.tacoid.cubearena.Cube;
@@ -27,6 +30,7 @@ public abstract class Tile implements Actor3d {
 	Direction direction;
 	int x,y;
 	float z;
+	float baseScale;
 	
 	Interpolator interp;
 	float t;
@@ -36,14 +40,16 @@ public abstract class Tile implements Actor3d {
 	protected ShaderProgram shader;
 	protected ShaderProgram colorShader;
 	protected Mesh mesh;
+	private static float[] baseColor = {0.1f, 0.1f, 0.1f, 1.0f};
 	
 	public Tile() {
 		this.x = 0;
 		this.y = 0;
 		this.z = 0.0f;
 		this.t = 0.0f;
+		baseScale = new Random().nextFloat()*3.0f + 2.0f;
 		speed = 1.5f*(new Random().nextFloat()*0.6f + 0.7f);
-		interp = OvershootInterpolator.$(2.0f);
+		interp = DecelerateInterpolator.$(2.0f);
 		this.setState(TileState.APPEARING);
 		this.direction = Direction.NORTH;
 		
@@ -63,7 +69,7 @@ public abstract class Tile implements Actor3d {
 		switch(getState()) {
 		case APPEARING:
 			t+=delta/speed;
-			z = 8*interp.getInterpolation(t)-8; 
+			z = 8-8*interp.getInterpolation(t); 
 			//z = 5.0f*t-5;
 			if(t >= 1.0f) {
 				setState(TileState.IDLE);
@@ -75,6 +81,23 @@ public abstract class Tile implements Actor3d {
 			break;
 		}
 	}
+	
+	public void drawTileBase(Matrix4 t, float delta) {
+		Matrix4 transform = new Matrix4(t);
+		
+		this.update(delta);
+        colorShader.begin();
+        {
+	        colorShader.setUniform4fv("u_color", baseColor, 0, 4);
+	        transform.translate(x, -getZ()-0.3f, -y);
+	        transform.scale(1.0f, baseScale, 1.0f);
+	        
+			colorShader.setUniformMatrix("u_projView", transform);
+			mesh.render(shader, GL20.GL_TRIANGLES);
+        }
+		colorShader.end();
+	}
+
 
 	public TileType getType() {
 		return type;

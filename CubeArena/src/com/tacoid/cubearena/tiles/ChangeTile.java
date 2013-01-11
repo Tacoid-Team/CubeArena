@@ -27,6 +27,7 @@ public class ChangeTile extends Tile {
         {
 	        shader.setUniformi("u_diffuse", 0);
 	        changeTexture.bind();
+	        transform.rotate(0.0f, 1.0f, 0.0f, this.direction.toAngle());
 	        transform.translate(x, 0.0f, -y);
 			shader.setUniformMatrix("u_projView", transform);
 			mesh.render(shader, GL20.GL_TRIANGLES);

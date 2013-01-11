@@ -1,22 +1,28 @@
 package com.tacoid.cubearena.tiles;
 
 public enum TileType {
-	NO_TILE(0),
-	EMPTY(1),
-	START(2),
-	END(3),
-	CHANGE_DIRECTION(4),
-	ROTATE_RIGHT(5),
-	ROTATE_LEFT(6),
-	PUSH(7),
-	TELEPORT(8);
+	NO_TILE(0, false),
+	EMPTY(1, false),
+	START(2, true),
+	END(3, false),
+	CHANGE_DIRECTION(4, true),
+	ROTATE_RIGHT(5, false),
+	ROTATE_LEFT(6, false),
+	PUSH(7, true),
+	TELEPORT(8, false);
 	
 	
 	
 	final int value;
+	final boolean directionRequired;
 	
-	TileType(int value) {
+	public boolean isDirectionRequired() {
+		return directionRequired;
+	}
+
+	TileType(int value, boolean directionRequired) {
 		this.value = value;
+		this.directionRequired = directionRequired;
 	}
 	
 	public int getValue() {

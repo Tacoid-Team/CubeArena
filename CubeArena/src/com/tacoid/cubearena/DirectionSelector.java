@@ -24,6 +24,7 @@ public class DirectionSelector implements Actor3d {
 		x = 0;
 		y = 0;
 		t = 0.0f;
+		visible = false;
 		colorShader = GameScreen.getColorShader();
 		
 		InputStream in = Gdx.files.internal("data/arrow.obj").read();
@@ -31,10 +32,12 @@ public class DirectionSelector implements Actor3d {
 	}
 
 	public void render(Matrix4 t, float delta) {
-		renderArrow(t,delta,1,0, -90.0f);
-		renderArrow(t,delta,-1,0, 90.0f);
-		renderArrow(t,delta,0,-1, 180);
-		renderArrow(t,delta,0,1, 0);
+		if(visible) {
+			renderArrow(t,delta,1,0, -90.0f);
+			renderArrow(t,delta,-1,0, 90.0f);
+			renderArrow(t,delta,0,-1, 180);
+			renderArrow(t,delta,0,1, 0);
+		}
 	}
 	
 	public void renderArrow(Matrix4 t, float delta, int x, int y, float rot) {

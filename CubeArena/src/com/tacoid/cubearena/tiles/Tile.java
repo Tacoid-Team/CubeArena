@@ -23,12 +23,13 @@ public abstract class Tile implements Actor3d {
 		IDLE
 	};
 	
-	TileType type;
-	private TileState state;
-	Direction direction;
-	int x,y;
-	float z;
-	float baseScale;
+	protected TileType type;
+	protected TileState state;
+	protected Direction direction;
+
+	protected int x,y;
+	private float z;
+	private float baseScale;
 	
 	Interpolator interp;
 	float t;
@@ -138,5 +139,5 @@ public abstract class Tile implements Actor3d {
 
 	public void setState(TileState state) {
 		this.state = state;
-	}
+	}	
 }

@@ -26,6 +26,7 @@ public class StartTile extends Tile {
 	        shader.setUniformi("u_diffuse", 0);
 	        startTexture.bind();
 	        transform.translate(x, this.getZ(), -y);
+	        transform.rotate(0.0f, 1.0f, 0.0f, this.direction.toAngle());
 			shader.setUniformMatrix("u_projView", transform);
 			mesh.render(shader, GL20.GL_TRIANGLES);
         }

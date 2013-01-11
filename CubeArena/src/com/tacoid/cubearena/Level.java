@@ -34,10 +34,19 @@ public class Level implements Actor3d {
 	public LevelData levelData;
 	
 	/* On conserve les références de certaines tiles, comme les End/Start, et les téléporteurs */
-	public Tile start;
-	public Tile end;
-	public Tile tp1;
-	public Tile tp2;
+	private Tile start;
+	private Tile end;
+	private Tile tp1;
+	private Tile tp2;
+	
+	private boolean touched;
+	private int touchedX;
+	private int touchedY;
+	private Tile touchedTile;
+
+	protected Tile getTouchedTile() {
+		return touchedTile;
+	}
 
 	public Level(LevelData ld) {
 		setState(LevelState.BUSY);
@@ -90,19 +99,25 @@ public class Level implements Actor3d {
 		}
 	}
 
-	public Tile checkTileTouched(OrthographicCamera cam) {
-		Tile touched = null;
+	public void checkTileTouched(OrthographicCamera cam) {
 		if(Gdx.input.justTouched()) {
 			Ray pickRay = cam.getPickRay(Gdx.input.getX(), Gdx.input.getY());
 			Intersector.intersectRayPlane(pickRay, xzPlane, intersection);
 			int x = (int)(intersection.x+0.5);
 			int z = (int)(0.5-intersection.z);
-			if(x >= 0 && x < level.length && z >= 0 && z < level[0].length) {
-				touched = level[x][z];
-			}
+			touchedTile = getTile(x,z);
+			touchedX = x;
+			touchedY = z;
+			touched = true;
 		}
-		
-		return touched;
+	}
+	
+	public Tile getTile(int x, int y) {
+		if(x >= 0 && x < level.length && y >= 0 && y < level[0].length) {
+			return level[x][y];
+		} else {
+			return null;
+		}
 	}
 	
 	public void replaceTile(Tile oldTile, TileType newTileType) {
@@ -153,5 +168,22 @@ public class Level implements Actor3d {
 	public void setState(LevelState state) {
 		this.state = state;
 	}
+	
+	protected boolean isTouched() {
+		return touched;
+	}
+	
+	public void resetTouch() {
+		touched = false;
+	}
+	
+	protected int getTouchedX() {
+		return touchedX;
+	}
+	
+	protected int getTouchedY() {
+		return touchedY;
+	}
+
 
 }

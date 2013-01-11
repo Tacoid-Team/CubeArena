@@ -45,9 +45,7 @@ public class GameLogic {
 	private Level level = null;
 	private Cube cube = null;
 	private DirectionSelector directionSelector= null; 
-	public DirectionSelector getDirectionSelector() {
-		return directionSelector;
-	}
+
 
 	private Inventory inventory = null;
 	
@@ -88,8 +86,12 @@ public class GameLogic {
 				cube.setY(level.getStart().getY());
 				cube.setDirection(level.levelData.initDir);
 				setState(GameState.LAUNCHING);
-			} else if(selectedTile != null) {
-				state = GameState.PLACING_TILE;
+			} else if(level.isTouched()) {
+				selectedTile = level.getTouchedTile();
+				if(selectedTile != null) {
+					state = GameState.PLACING_TILE;
+					level.resetTouch();
+				}
 			}
 			break;
 		case PLACING_TILE:
@@ -98,27 +100,46 @@ public class GameLogic {
 			 * - Soit la tile peut être placée directement, dans ce cas on la place et on reviens Idle
 			 * - Soit la tile nécessite d'être orientée, alors affiche le choix de direction et on passe en état CHOSING_DIRECTION
 			 */
-			if(false) {
-				setState(GameState.CHOSING_DIRECTION);
-			} else {
+			if(selectedType.isDirectionRequired()) {
 				directionSelector.setX(selectedTile.getX());
 				directionSelector.setY(selectedTile.getY());
+				directionSelector.setVisible(true);
+				setState(GameState.CHOSING_DIRECTION);
+			} else {
 				level.replaceTile(selectedTile, selectedType);
-				selectedTile = null;
 				selectedType = TileType.EMPTY;
 				setState(GameState.IDLE);
 			}
 			break;
 		case CHOSING_DIRECTION:
-			/* Cet état sert à attendre que le joueur choisisse une direction pour la tile qu'il veut placer */
-			setState(GameState.IDLE);
+			
+			if(level.isTouched()) {
+				Direction d;
+				if(level.getTouchedX() == selectedTile.getX()+1 && level.getTouchedY() == selectedTile.getY()) {
+					d = Direction.EAST;
+				} else if(level.getTouchedX() == selectedTile.getX()-1 && level.getTouchedY() == selectedTile.getY()) {
+					d = Direction.WEST;
+				} else if(level.getTouchedX() == selectedTile.getX() && level.getTouchedY() == selectedTile.getY()+1) {
+					d = Direction.NORTH;
+				} else if(level.getTouchedX() == selectedTile.getX() && level.getTouchedY() == selectedTile.getY()-1) {
+					d = Direction.SOUTH;
+				} else {
+					level.resetTouch();
+					break;
+				}
+				
+				level.replaceTile(selectedTile, selectedType);
+				level.getTile(selectedTile.getX(), selectedTile.getY()).setDirection(d);
+				selectedType = TileType.EMPTY;
+				setState(GameState.IDLE);
+				directionSelector.setVisible(false);
+				level.resetTouch();
+			}
 			break;
 		case LAUNCHING:
 			/* Cette état correpond au moment où l'utilisateur appuis sur le boutton "done" pour lancer le jeu. 
 			 * Avant de lancer vraiment le jeu, on attend que le cube soit IDLE (c'est à dire que son animation d'apparition soit terminée
 			 */
-
-			
 			getCube().setVisible(true);
 			if(getCube().getState() == State.IDLE) {
 				setState(GameState.RUNNING);
@@ -178,7 +199,6 @@ public class GameLogic {
 		inventory.addTile(TileType.ROTATE_RIGHT, 2);
 		
 		selectedType = TileType.EMPTY;
-		selectedTile = null;
 		
 		state = GameState.IDLE;
 		command = GameCommand.NONE;
@@ -209,11 +229,9 @@ public class GameLogic {
 	}	
 	
 	public void checkTouch(OrthographicCamera cam) {
-		if(state == GameState.IDLE) {
-			Tile t = level.checkTileTouched(cam);
-			if(t != null && t.getType() == TileType.EMPTY && selectedType != TileType.EMPTY) {
-				selectedTile = t;
-			}
-		}
+		level.checkTileTouched(cam);
+	}
+	public DirectionSelector getDirectionSelector() {
+		return directionSelector;
 	}
 }

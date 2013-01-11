@@ -78,7 +78,10 @@ public class GameLogic {
 			if(command == GameCommand.START) {
 				/* TODO: cacher le menu d'édition et afficher le boutton stop */
 				System.out.println("new state: Lauching");
-				getCube().setState(State.APPEARING); 
+				cube = new Cube();
+				cube.setX(level.getStart().getX());
+				cube.setY(level.getStart().getY());
+				cube.setDirection(level.levelData.initDir);
 				setState(GameState.LAUNCHING);
 			} else if(selectedTile != null) {
 				state = GameState.PLACING_TILE;
@@ -107,6 +110,8 @@ public class GameLogic {
 			/* Cette état correpond au moment où l'utilisateur appuis sur le boutton "done" pour lancer le jeu. 
 			 * Avant de lancer vraiment le jeu, on attend que le cube soit IDLE (c'est à dire que son animation d'apparition soit terminée
 			 */
+
+			
 			getCube().setVisible(true);
 			if(getCube().getState() == State.IDLE) {
 				setState(GameState.RUNNING);

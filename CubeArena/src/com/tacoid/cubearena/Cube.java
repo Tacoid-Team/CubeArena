@@ -43,7 +43,7 @@ public class Cube implements Actor3d {
 	public Cube() {
 		x = 0;
 		y = 0;
-		state = State.IDLE;
+		state = State.APPEARING;
 		direction = Direction.EAST;
 		shader = GameScreen.getTextureShader();
 		setVisible(false);

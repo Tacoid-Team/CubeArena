@@ -17,11 +17,13 @@ public class DirectionSelector implements Actor3d {
 
 	private ShaderProgram colorShader;
 	private Mesh arrow;
-	private float[] color = {1.0f, 0.3f, 0.3f, 0.8f};
+	private float[] color = {1.0f, 0.4f, 0.4f, 0.8f};
+	float t;
 	
 	public DirectionSelector() {
 		x = 0;
 		y = 0;
+		t = 0.0f;
 		colorShader = GameScreen.getColorShader();
 		
 		InputStream in = Gdx.files.internal("data/arrow.obj").read();
@@ -37,6 +39,7 @@ public class DirectionSelector implements Actor3d {
 	
 	public void renderArrow(Matrix4 t, float delta, int x, int y, float rot) {
 		Matrix4 transform = new Matrix4(t);
+		this.t+=delta;
         colorShader.begin();
         {
         	colorShader.setUniform4fv("u_color", color, 0, 4);
@@ -44,6 +47,7 @@ public class DirectionSelector implements Actor3d {
         	transform.scale(.25f, 0.2f, .25f);
 	        transform.translate((this.x+x)*4, 1.0f, -(this.y+y)*4);
 	        transform.rotate(0.0f, 1.0f, 0.0f, rot);
+	        transform.translate(0.0f, 0.0f,(float) Math.cos(this.t)*0.8f);
 			colorShader.setUniformMatrix("u_projView", transform);
 			arrow.render(colorShader, GL20.GL_TRIANGLES);
 			

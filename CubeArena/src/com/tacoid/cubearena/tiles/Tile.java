@@ -4,7 +4,6 @@ import java.io.InputStream;
 import java.util.Random;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.g3d.loaders.obj.ObjLoader;
@@ -12,7 +11,6 @@ import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.scenes.scene2d.Interpolator;
 import com.badlogic.gdx.scenes.scene2d.interpolators.DecelerateInterpolator;
-import com.badlogic.gdx.scenes.scene2d.interpolators.OvershootInterpolator;
 import com.tacoid.cubearena.Actor3d;
 import com.tacoid.cubearena.Cube;
 import com.tacoid.cubearena.Direction;
@@ -40,6 +38,7 @@ public abstract class Tile implements Actor3d {
 	protected ShaderProgram shader;
 	protected ShaderProgram colorShader;
 	protected Mesh mesh;
+	
 	private static float[] baseColor = {0.1f, 0.1f, 0.1f, 1.0f};
 	
 	public Tile() {
@@ -48,7 +47,7 @@ public abstract class Tile implements Actor3d {
 		this.z = 0.0f;
 		this.t = 0.0f;
 		baseScale = new Random().nextFloat()*3.0f + 2.0f;
-		speed = 1.5f*(new Random().nextFloat()*0.6f + 0.7f);
+		speed = 2.0f*(new Random().nextFloat()*0.6f + 0.7f);
 		interp = DecelerateInterpolator.$(2.0f);
 		this.setState(TileState.APPEARING);
 		this.direction = Direction.NORTH;
@@ -59,6 +58,7 @@ public abstract class Tile implements Actor3d {
 		/* Mesh loading */
 		InputStream in = Gdx.files.internal("data/tile.obj").read();
 		mesh = ObjLoader.loadObj(in);
+
 	}
 	
 	abstract public void render(Matrix4 t, float delta);

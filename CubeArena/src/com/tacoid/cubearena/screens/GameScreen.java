@@ -141,9 +141,13 @@ public class GameScreen implements Screen,InputProcessor {
         
         logic.checkTouch(cam);
 
-        logic.getCube().render(transform, delta);
+        if(logic.getCube() != null) {
+        	logic.getCube().render(transform, delta);
+        }
 
         logic.getLevel().render(transform, delta);
+        
+        logic.getDirectionSelector().render(transform, delta);
         
         Gdx.graphics.getGL20().glDisable(GL20.GL_CULL_FACE);
         

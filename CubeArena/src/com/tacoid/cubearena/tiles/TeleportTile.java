@@ -18,6 +18,8 @@ public class TeleportTile extends Tile {
 	}
 	@Override
 	public void render(Matrix4 t, float delta) {
+
+		
 		drawTileBase(t,delta);
 		Matrix4 transform = new Matrix4(t);
         shader.begin();
@@ -29,6 +31,8 @@ public class TeleportTile extends Tile {
 			mesh.render(shader, GL20.GL_TRIANGLES);
         }
 		shader.end();
+		
+
 	}
 	@Override
 	public void react(Cube cube) {

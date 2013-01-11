@@ -44,19 +44,24 @@ public class GameLogic {
 	
 	private Level level = null;
 	private Cube cube = null;
+	private DirectionSelector directionSelector= null; 
+	public DirectionSelector getDirectionSelector() {
+		return directionSelector;
+	}
+
 	private Inventory inventory = null;
+	
 	
 	public Inventory getInventory() {
 		return inventory;
 	}
 
 	private GameLogic() {
-		cube = new Cube();
+		directionSelector = new DirectionSelector();
 	}
 	
 	@SuppressWarnings("unused")
 	public void update() {
-		getCube().setVisible(false);
         /* Game state machine */
         switch(getState()) {
         case INIT:
@@ -96,6 +101,8 @@ public class GameLogic {
 			if(false) {
 				setState(GameState.CHOSING_DIRECTION);
 			} else {
+				directionSelector.setX(selectedTile.getX());
+				directionSelector.setY(selectedTile.getY());
 				level.replaceTile(selectedTile, selectedType);
 				selectedTile = null;
 				selectedType = TileType.EMPTY;
@@ -165,9 +172,7 @@ public class GameLogic {
 	}
 	
 	public void loadLevel(LevelData newLevel) {
-		cube.setDirection(newLevel.initDir);
 		level = new Level(newLevel);
-		level.initCube(cube);
 		inventory = new Inventory();
 		inventory.addTile(TileType.PUSH, 1);
 		inventory.addTile(TileType.ROTATE_RIGHT, 2);

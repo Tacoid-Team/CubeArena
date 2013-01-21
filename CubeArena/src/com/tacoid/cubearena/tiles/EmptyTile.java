@@ -2,10 +2,11 @@ package com.tacoid.cubearena.tiles;
 
 import java.util.Random;
 
+import actors.Cube;
+import actors.Cube.State;
+
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.math.Matrix4;
-import com.tacoid.cubearena.Cube;
-import com.tacoid.cubearena.Cube.State;
 
 
 public class EmptyTile extends Tile {

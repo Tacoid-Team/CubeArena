@@ -1,4 +1,4 @@
-package com.tacoid.cubearena;
+package actors;
 
 import java.io.InputStream;
 
@@ -10,6 +10,9 @@ import com.badlogic.gdx.graphics.g3d.loaders.obj.ObjLoader;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
+import com.tacoid.cubearena.Actor3d;
+import com.tacoid.cubearena.CubeArena;
+import com.tacoid.cubearena.Direction;
 import com.tacoid.cubearena.screens.GameScreen;
 import com.tacoid.cubearena.tiles.Tile;
 

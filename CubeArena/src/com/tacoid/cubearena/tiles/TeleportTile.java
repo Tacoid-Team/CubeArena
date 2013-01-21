@@ -1,18 +1,27 @@
 package com.tacoid.cubearena.tiles;
 
+import actors.Cube;
+import actors.Cube.State;
+
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Matrix4;
-import com.tacoid.cubearena.Cube;
 import com.tacoid.cubearena.CubeArena;
-import com.tacoid.cubearena.Cube.State;
 
 
 public class TeleportTile extends Tile {
-	Texture teleportTexture;
+	
+	static int teleportCounter = 0;
+	
+	private Texture teleportTexture;
+	private int teleportId;
+	
+	
 	
 	public TeleportTile() {
 		super();
+		teleportCounter++;
+		teleportId = teleportCounter;
 		this.type = TileType.TELEPORT;
 		teleportTexture = CubeArena.getInstance().manager.get("textures/teleport-tile.png", Texture.class);
 	}
@@ -49,5 +58,7 @@ public class TeleportTile extends Tile {
      	*/
 		cube.setState(State.ROLLING);
 	}
-
+	public int getTeleportId() {
+		return teleportId;
+	}
 }

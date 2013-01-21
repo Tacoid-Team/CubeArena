@@ -3,6 +3,8 @@ package com.tacoid.cubearena.tiles;
 import java.io.InputStream;
 import java.util.Random;
 
+import actors.Cube;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Mesh;
@@ -12,7 +14,6 @@ import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.scenes.scene2d.Interpolator;
 import com.badlogic.gdx.scenes.scene2d.interpolators.DecelerateInterpolator;
 import com.tacoid.cubearena.Actor3d;
-import com.tacoid.cubearena.Cube;
 import com.tacoid.cubearena.Direction;
 import com.tacoid.cubearena.screens.GameScreen;
 

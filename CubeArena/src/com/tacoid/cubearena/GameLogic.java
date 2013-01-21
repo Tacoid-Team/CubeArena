@@ -1,7 +1,10 @@
 package com.tacoid.cubearena;
 
+import actors.Cube;
+import actors.DirectionSelector;
+import actors.Cube.State;
+
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.tacoid.cubearena.Cube.State;
 import com.tacoid.cubearena.Level.LevelState;
 import com.tacoid.cubearena.tiles.Tile;
 import com.tacoid.cubearena.tiles.TileType;

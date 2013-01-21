@@ -31,11 +31,6 @@ public class GameScreen implements Screen,InputProcessor {
 
 	/* 3D Part */
 	private OrthographicCamera cam;
-	static ShaderProgram textureShader;
-	static ShaderProgram colorShader;
-	public static ShaderProgram getColorShader() {
-		return colorShader;
-	}
 
 	private final Matrix4 transform = new Matrix4();
 	
@@ -95,12 +90,6 @@ public class GameScreen implements Screen,InputProcessor {
 		table.setFillParent(true);
 		stage.addActor(table);
 
-		textureShader = new ShaderProgram(Gdx.files.internal("shaders/tex-vs.glsl"),
-										  Gdx.files.internal("shaders/tex-fs.glsl"));
-		colorShader = new ShaderProgram(Gdx.files.internal("shaders/color-vs.glsl"),
-				  Gdx.files.internal("shaders/color-fs.glsl"));
-		if (!textureShader.isCompiled()) throw new GdxRuntimeException("Couldn't compile texture shader");
-
 		GameLogic.getInstance().loadLevel(LevelFactory.getLevel(0));
 		
 		
@@ -154,11 +143,6 @@ public class GameScreen implements Screen,InputProcessor {
         stage.draw();
         Table.drawDebug(stage);
 	}
-	
-	public static ShaderProgram getTextureShader() {
-		return textureShader;
-	}
-
 
 	@Override
 	public void resize(int width, int height) {

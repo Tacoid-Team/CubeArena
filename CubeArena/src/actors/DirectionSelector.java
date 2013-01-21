@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.g3d.loaders.obj.ObjLoader;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Matrix4;
 import com.tacoid.cubearena.Actor3d;
+import com.tacoid.cubearena.ShaderManager;
 import com.tacoid.cubearena.screens.GameScreen;
 
 public class DirectionSelector implements Actor3d {
@@ -26,7 +27,7 @@ public class DirectionSelector implements Actor3d {
 		y = 0;
 		t = 0.0f;
 		visible = false;
-		colorShader = GameScreen.getColorShader();
+		colorShader = ShaderManager.getInstance().getShader("color");
 		
 		InputStream in = Gdx.files.internal("data/arrow.obj").read();
 		arrow = ObjLoader.loadObj(in);

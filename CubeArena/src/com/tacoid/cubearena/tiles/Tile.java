@@ -15,6 +15,7 @@ import com.badlogic.gdx.scenes.scene2d.Interpolator;
 import com.badlogic.gdx.scenes.scene2d.interpolators.DecelerateInterpolator;
 import com.tacoid.cubearena.Actor3d;
 import com.tacoid.cubearena.Direction;
+import com.tacoid.cubearena.ShaderManager;
 import com.tacoid.cubearena.screens.GameScreen;
 
 public abstract class Tile implements Actor3d {
@@ -54,8 +55,8 @@ public abstract class Tile implements Actor3d {
 		this.setState(TileState.APPEARING);
 		this.direction = Direction.NORTH;
 		
-		shader = GameScreen.getTextureShader();
-		colorShader = GameScreen.getColorShader();
+		shader = ShaderManager.getInstance().getShader("texture");
+		colorShader = ShaderManager.getInstance().getShader("color");
 
 		/* Mesh loading */
 		InputStream in = Gdx.files.internal("data/tile.obj").read();

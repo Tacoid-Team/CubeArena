@@ -13,6 +13,7 @@ import com.badlogic.gdx.math.Vector3;
 import com.tacoid.cubearena.Actor3d;
 import com.tacoid.cubearena.CubeArena;
 import com.tacoid.cubearena.Direction;
+import com.tacoid.cubearena.ShaderManager;
 import com.tacoid.cubearena.screens.GameScreen;
 import com.tacoid.cubearena.tiles.Tile;
 
@@ -48,7 +49,7 @@ public class Cube implements Actor3d {
 		y = 0;
 		state = State.APPEARING;
 		direction = Direction.EAST;
-		shader = GameScreen.getTextureShader();
+		shader = ShaderManager.getInstance().getShader("texture");
 		setVisible(false);
 		
 		/* Texture loading */

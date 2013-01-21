@@ -1,6 +1,7 @@
 package com.tacoid.cubearena;
 
 import com.badlogic.gdx.Game;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;
 import com.tacoid.cubearena.screens.LoadingScreen;
@@ -45,6 +46,9 @@ public class CubeArena extends Game {
 		manager.load("textures/start-tile.png", Texture.class);
 		manager.load("textures/teleport-tile.png", Texture.class);
 		manager.load("textures/cube.png", Texture.class);
-		manager.load("textures/button.9.png", Texture.class);	
+		manager.load("textures/button.9.png", Texture.class);
+		
+		ShaderManager.getInstance().loadShader("color", "shaders/color-vs.glsl","shaders/color-fs.glsl");
+		ShaderManager.getInstance().loadShader("texture", "shaders/tex-vs.glsl","shaders/tex-fs.glsl");
 	}
 }

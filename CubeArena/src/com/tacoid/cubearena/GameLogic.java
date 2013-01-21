@@ -61,7 +61,6 @@ public class GameLogic {
 		directionSelector = new DirectionSelector();
 	}
 	
-	@SuppressWarnings("unused")
 	public void update() {
         /* Game state machine */
         switch(getState()) {

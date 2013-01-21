@@ -10,7 +10,6 @@ import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Matrix4;
 import com.tacoid.cubearena.Actor3d;
 import com.tacoid.cubearena.ShaderManager;
-import com.tacoid.cubearena.screens.GameScreen;
 
 public class DirectionSelector implements Actor3d {
 	private boolean visible;

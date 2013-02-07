@@ -2,6 +2,7 @@ package com.tacoid.cubearena.tiles;
 
 import actors.Cube;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Matrix4;
@@ -17,17 +18,17 @@ public class EndTile extends Tile {
 		endTexture = CubeArena.getInstance().manager.get("textures/end-tile.png", Texture.class);
 	}
 	@Override
-	public void render(Matrix4 t, float delta) {
-		drawTileBase(t,delta);
+	public void renderTile(Matrix4 t, float delta) {
 		Matrix4 transform = new Matrix4(t);
 		this.update(delta);
+
         shader.begin();
         {
 	        shader.setUniformi("u_diffuse", 0);
 	        endTexture.bind();
-	        transform.translate(x, this.getZ(), -y);
+	        transform.translate(x, getZ() + 0.001f, -y);
 			shader.setUniformMatrix("u_projView", transform);
-			mesh.render(shader, GL20.GL_TRIANGLES);
+			decal.render(shader, GL20.GL_TRIANGLES);
         }
 		shader.end();
 	}

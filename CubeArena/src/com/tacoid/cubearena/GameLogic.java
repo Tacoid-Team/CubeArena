@@ -90,7 +90,7 @@ public class GameLogic {
 				setState(GameState.LAUNCHING);
 			} else if(level.isTouched()) {
 				selectedTile = level.getTouchedTile();
-				if(selectedTile != null) {
+				if(selectedTile != null && selectedTile.isReplaceable()) {
 					state = GameState.PLACING_TILE;
 					level.resetTouch();
 				}

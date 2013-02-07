@@ -105,6 +105,7 @@ public class GameScreen implements Screen,InputProcessor {
 		Gdx.graphics.getGL20().glEnable(GL20.GL_DEPTH_TEST);
 		Gdx.graphics.getGL20().glEnable(GL20.GL_BLEND);
 		Gdx.graphics.getGL20().glBlendFunc (GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
+		Gdx.graphics.getGL20().glEnable(GL20.GL_POLYGON_OFFSET_FILL); 
 		
 		Gdx.input.setInputProcessor(this);
 		stage.act(Gdx.graphics.getDeltaTime());

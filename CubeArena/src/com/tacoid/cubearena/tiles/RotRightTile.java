@@ -11,23 +11,27 @@ import com.tacoid.cubearena.CubeArena;
 
 public class RotRightTile extends Tile {
 	Texture rotRightTexture;
-	
+	float theta;
+	static float current_theta = 0.0f;
 	public RotRightTile() {
 		super();
+		theta = current_theta;
 		this.type = TileType.ROTATE_RIGHT;
 		rotRightTexture = CubeArena.getInstance().manager.get("textures/rotright-tile.png", Texture.class);
 	}
 	@Override
-	public void render(Matrix4 t, float delta) {
-		drawTileBase(t,delta);
+	public void renderTile(Matrix4 t, float delta) {
 		Matrix4 transform = new Matrix4(t);
         shader.begin();
         {
 	        shader.setUniformi("u_diffuse", 0);
 	        rotRightTexture.bind();
-	        transform.translate(x, 0.0f, -y);
+	        transform.translate(x, getZ() + 0.001f, -y);
+	        transform.rotate(0.0f, -1.0f, 0.0f, theta);
 			shader.setUniformMatrix("u_projView", transform);
-			mesh.render(shader, GL20.GL_TRIANGLES);
+			decal.render(shader, GL20.GL_TRIANGLES);
+			theta+=100*delta;
+			current_theta = theta;
         }
 		shader.end();
 	}

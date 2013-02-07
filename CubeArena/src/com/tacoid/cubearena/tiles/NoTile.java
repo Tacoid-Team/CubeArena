@@ -13,20 +13,21 @@ public class NoTile extends Tile {
 	final boolean show = false;
 	public NoTile() {
 		super();
+		this.isVisible = false;
 		this.type = TileType.NO_TILE;
 		noTileTexture = CubeArena.getInstance().manager.get("textures/no-tile.png", Texture.class);
 		this.setState(TileState.IDLE);
 	}
 
 	@Override
-	public void render(Matrix4 t, float delta) {
+	public void renderTile(Matrix4 t, float delta) {
 		if(show) {
 			Matrix4 transform = new Matrix4(t);
 	        shader.begin();
 	        {
 		        shader.setUniformi("u_diffuse", 0);
 		        noTileTexture.bind();
-		        transform.translate(x, 0.0f, -y);
+		        transform.translate(x, getZ() + 0.001f, -y);
 				shader.setUniformMatrix("u_projView", transform);
 				mesh.render(shader, GL20.GL_TRIANGLES);
 	        }

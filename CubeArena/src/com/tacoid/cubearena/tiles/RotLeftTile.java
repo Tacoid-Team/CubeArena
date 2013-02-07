@@ -18,16 +18,15 @@ public class RotLeftTile extends Tile {
 		rotLeftTexture = CubeArena.getInstance().manager.get("textures/rotleft-tile.png", Texture.class);
 	}
 	@Override
-	public void render(Matrix4 t, float delta) {
-		drawTileBase(t,delta);
+	public void renderTile(Matrix4 t, float delta) {
 		Matrix4 transform = new Matrix4(t);
         shader.begin();
         {
 	        shader.setUniformi("u_diffuse", 0);
 	        rotLeftTexture.bind();
-	        transform.translate(x, 0.0f, -y);
+	        transform.translate(x, getZ() + 0.001f, -y);
 			shader.setUniformMatrix("u_projView", transform);
-			mesh.render(shader, GL20.GL_TRIANGLES);
+			decal.render(shader, GL20.GL_TRIANGLES);
         }
 		shader.end();
 	}

@@ -4,6 +4,7 @@ import actors.Cube;
 import actors.Cube.State;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Matrix4;
@@ -87,6 +88,9 @@ public class Level implements Actor3d {
 	@Override
 	public void render(Matrix4 transform, float delta) {
 		boolean busy = false;
+		float bias = 50.0f;
+		
+		Gdx.graphics.getGL20().glPolygonOffset(bias,bias);
 		for(int i=0; i<level.length; i++) {
 			for(int j=0; j<level[i].length; j++) {
 				if(level[i][j].getState() != TileState.IDLE) {
@@ -95,6 +99,22 @@ public class Level implements Actor3d {
 				level[i][j].render(transform, delta);
 			}
 		}
+		//Gdx.graphics.getGL20().glDisable(GL20.GL_DEPTH_TEST);
+		
+		
+		for(int i=0; i<level.length; i++) {
+			
+			for(int j=0; j<level[i].length; j++) {
+				if(level[i][j].getState() != TileState.IDLE) {
+					busy = true;
+				}
+				Gdx.graphics.getGL20().glPolygonOffset(bias,bias);
+				level[i][j].renderTile(transform, delta);
+				bias -= 2.0f;
+			}
+			
+		}
+		//Gdx.graphics.getGL20().glEnable(GL20.GL_DEPTH_TEST);
 		
 		if(!busy) {
 			state = LevelState.READY;

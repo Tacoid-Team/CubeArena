@@ -21,8 +21,7 @@ public class ChangeTile extends Tile {
 	}
 
 	@Override
-	public void render(Matrix4 t, float delta) {
-		drawTileBase(t,delta);
+	public void renderTile(Matrix4 t, float delta) {
 		Matrix4 transform = new Matrix4(t);
         shader.begin();
         {
@@ -31,7 +30,7 @@ public class ChangeTile extends Tile {
 	        transform.rotate(0.0f, 1.0f, 0.0f, this.direction.toAngle());
 	        transform.translate(x, 0.0f, -y);
 			shader.setUniformMatrix("u_projView", transform);
-			mesh.render(shader, GL20.GL_TRIANGLES);
+			decal.render(shader, GL20.GL_TRIANGLES);
         }
 		shader.end();
 	}

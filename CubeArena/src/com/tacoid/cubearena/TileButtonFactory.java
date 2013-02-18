@@ -11,6 +11,8 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Button.ButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
@@ -78,12 +80,15 @@ public class TileButtonFactory {
 	public class TileButton extends Button implements ClickListener{
 		
 		TileType type;
+		Label label;
 
 
 		public TileButton(TileType type, ButtonStyle style) {
 			super(new ButtonSprite(type), style);
 			this.type = type;
-			//this.add(new ButtonSprite());
+			label = new Label("x"+GameLogic.getInstance().getInventory().getAmount(type), new LabelStyle(new BitmapFont(),new Color(1.0f, 0.0f, 0.0f, 1.0f)));
+			
+			this.add(label).right();
 			setClickListener(this);
 		}
 		
@@ -103,6 +108,7 @@ public class TileButtonFactory {
 				this.x = 20;
 			else
 				this.x = 0;
+			label.setText("x"+GameLogic.getInstance().getInventory().getAmount(type));
 			super.draw(batch, parentAlpha);
 		}
 		

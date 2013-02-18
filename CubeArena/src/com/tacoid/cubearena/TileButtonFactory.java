@@ -79,6 +79,7 @@ public class TileButtonFactory {
 		
 		TileType type;
 
+
 		public TileButton(TileType type, ButtonStyle style) {
 			super(new ButtonSprite(type), style);
 			this.type = type;
@@ -92,9 +93,23 @@ public class TileButtonFactory {
 
 		@Override
 		public void click(Actor actor, float x, float y) {
-			GameLogic.getInstance().setSelectedType(type);
+			System.out.println(this.isChecked());
 			System.out.println(type.toString());
 		}
+		
+		@Override
+		public void draw (SpriteBatch batch, float parentAlpha) {
+			if(isChecked())
+				this.x = 20;
+			else
+				this.x = 0;
+			super.draw(batch, parentAlpha);
+		}
+		
+		public TileType getType() {
+			return type;
+		}
+
 
 	}
 
@@ -106,7 +121,7 @@ public class TileButtonFactory {
 		BitmapFont font = new BitmapFont();
 		font.scale(2.0f);
 		NinePatch patch =  new NinePatch(new Texture(Gdx.files.internal("textures/button.9.png")), 2,12, 2, 12);
-		ButtonStyle style = new ButtonStyle(patch, patch, patch,0,10,0,0);
+		ButtonStyle style = new ButtonStyle(patch, patch, patch,0,0,0,0);
 		return new TileButton(type, style);
 	}
 }

@@ -14,6 +14,8 @@ import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Button;
+import com.badlogic.gdx.scenes.scene2d.ui.ButtonGroup;
 import com.badlogic.gdx.scenes.scene2d.ui.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
@@ -85,20 +87,23 @@ public class GameScreen implements Screen,InputProcessor {
 											       font, new Color(0.0f, 0.0f, 0.0f, 1f),new Color(0.0f, 0.0f, 0.0f, 1f),new Color(0.0f, 0.0f, 0.0f, 1f));
 		
 		Table table = new Table();
+
 		table.setFillParent(true);
+		table.debug(); // turn on all debug lines (table, cell, and widget)
 		stage.addActor(table);
 
 		GameLogic.getInstance().loadLevel(LevelFactory.getLevel(0));
 		
-		
 		/* A faire après l'initialisation de gamelogic, vu que ça se base sur le contenu de l'inventory qui est initialisé dans gamelogic */
-		Set<TileType> set = GameLogic.getInstance().getInventory().getTileList();
-		table.row();
-		for(TileType type : set) {
-			table.add(TileButtonFactory.getInstance().createTileButton(type));
+		ButtonGroup bgroup = GameLogic.getInstance().getButtonGroup();
+		
+		for(Button but : bgroup.getButtons()) {
+			table.add(but).top();
+			table.row();
 		}
-		table.add( new DoneButton(style)).width(100);
-		table.add( new StopButton(style));
+		table.add( new DoneButton(style)).left().padLeft(5);
+		table.row();
+		table.add( new StopButton(style)).left().padLeft(5);
 		table.left().bottom();
 		
 		Gdx.graphics.getGL20().glEnable(GL20.GL_CULL_FACE);
@@ -129,18 +134,18 @@ public class GameScreen implements Screen,InputProcessor {
         
         logic.checkTouch(cam);
 
-        if(logic.getCube() != null) {
-        	logic.getCube().render(transform, delta);
-        }
-
         logic.getLevel().render(transform, delta);
         
         logic.getDirectionSelector().render(transform, delta);
         
+        if(logic.getCube() != null) {
+        	logic.getCube().render(transform, delta);
+        }
+        
         Gdx.graphics.getGL20().glDisable(GL20.GL_CULL_FACE);
         
         stage.draw();
-        Table.drawDebug(stage);
+       // Table.drawDebug(stage);
 	}
 
 	@Override

@@ -1,11 +1,16 @@
 package com.tacoid.cubearena;
 
+import java.util.Set;
+
 import actors.Cube;
 import actors.DirectionSelector;
 import actors.Cube.State;
 
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.scenes.scene2d.ui.Button;
+import com.badlogic.gdx.scenes.scene2d.ui.ButtonGroup;
 import com.tacoid.cubearena.Level.LevelState;
+import com.tacoid.cubearena.TileButtonFactory.TileButton;
 import com.tacoid.cubearena.tiles.Tile;
 import com.tacoid.cubearena.tiles.TileType;
 
@@ -41,14 +46,14 @@ public class GameLogic {
 	
 	private GameState state;
 	private GameCommand command;
-	
-	private TileType selectedType;
+
 	private Tile selectedTile;
 	
 	private Level level = null;
 	private Cube cube = null;
 	private DirectionSelector directionSelector= null; 
 
+	private ButtonGroup buttonGroup = null;
 
 	private Inventory inventory = null;
 	
@@ -59,9 +64,15 @@ public class GameLogic {
 
 	private GameLogic() {
 		directionSelector = new DirectionSelector();
+		buttonGroup = new ButtonGroup();
+		buttonGroup.setMinCheckCount(0);
+		buttonGroup.setMaxCheckCount(1);
 	}
 	
 	public void update() {
+		
+		TileButtonFactory.TileButton checkedButton = (TileButton)(buttonGroup.getChecked());
+		
         /* Game state machine */
         switch(getState()) {
         case INIT:
@@ -89,10 +100,13 @@ public class GameLogic {
 				cube.setDirection(level.levelData.initDir);
 				setState(GameState.LAUNCHING);
 			} else if(level.isTouched()) {
-				selectedTile = level.getTouchedTile();
-				if(selectedTile != null && selectedTile.isReplaceable()) {
-					state = GameState.PLACING_TILE;
-					level.resetTouch();
+				
+				if(checkedButton != null) {
+					selectedTile = level.getTouchedTile();
+					if(selectedTile != null && selectedTile.isReplaceable()) {
+						state = GameState.PLACING_TILE;
+						level.resetTouch();
+					}
 				}
 			}
 			break;
@@ -102,14 +116,13 @@ public class GameLogic {
 			 * - Soit la tile peut être placée directement, dans ce cas on la place et on reviens Idle
 			 * - Soit la tile nécessite d'être orientée, alors affiche le choix de direction et on passe en état CHOSING_DIRECTION
 			 */
-			if(selectedType.isDirectionRequired()) {
+			if(checkedButton.getType().isDirectionRequired()) {
 				directionSelector.setX(selectedTile.getX());
 				directionSelector.setY(selectedTile.getY());
 				directionSelector.setVisible(true);
 				setState(GameState.CHOSING_DIRECTION);
 			} else {
-				level.replaceTile(selectedTile, selectedType);
-				selectedType = TileType.EMPTY;
+				level.replaceTile(selectedTile, checkedButton.getType());
 				setState(GameState.IDLE);
 			}
 			break;
@@ -130,9 +143,8 @@ public class GameLogic {
 					break;
 				}
 				
-				level.replaceTile(selectedTile, selectedType);
+				level.replaceTile(selectedTile, checkedButton.getType());
 				level.getTile(selectedTile.getX(), selectedTile.getY()).setDirection(d);
-				selectedType = TileType.EMPTY;
 				setState(GameState.IDLE);
 				directionSelector.setVisible(false);
 				level.resetTouch();
@@ -197,11 +209,23 @@ public class GameLogic {
 	public void loadLevel(LevelData newLevel) {
 		level = new Level(newLevel);
 		inventory = new Inventory();
+
+
+		
 		inventory.addTile(TileType.PUSH, 1);
 		inventory.addTile(TileType.ROTATE_RIGHT, 2);
 		
-		selectedType = TileType.EMPTY;
+		buttonGroup = new ButtonGroup();
+		buttonGroup.setMinCheckCount(0);
+		buttonGroup.setMaxCheckCount(1);
 		
+		Set<TileType> set = inventory.getTileList();
+		
+		for(TileType type : set) {
+			Button but = TileButtonFactory.getInstance().createTileButton(type);
+			buttonGroup.add(but);
+		}
+
 		state = GameState.IDLE;
 		command = GameCommand.NONE;
 	}
@@ -221,19 +245,15 @@ public class GameLogic {
 	public void setState(GameState state) {
 		this.state = state;
 	}
-
-	public TileType getSelectedType() {
-		return selectedType;
-	}
-
-	public void setSelectedType(TileType selectedType) {
-		this.selectedType = selectedType;
-	}	
 	
 	public void checkTouch(OrthographicCamera cam) {
 		level.checkTileTouched(cam);
 	}
 	public DirectionSelector getDirectionSelector() {
 		return directionSelector;
+	}
+	
+	public ButtonGroup getButtonGroup() {
+		return buttonGroup;
 	}
 }

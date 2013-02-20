@@ -1,11 +1,7 @@
 package com.tacoid.cubearena.tiles;
 
-import java.util.Random;
-
 import actors.Cube;
 import actors.Cube.State;
-
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.math.Matrix4;
 
 

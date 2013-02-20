@@ -1,7 +1,5 @@
 package com.tacoid.cubearena.screens;
 
-import java.util.Set;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
@@ -22,8 +20,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.tablelayout.Table;
 import com.tacoid.cubearena.GameLogic;
 import com.tacoid.cubearena.LevelFactory;
-import com.tacoid.cubearena.TileButtonFactory;
-import com.tacoid.cubearena.tiles.TileType;
 
 public class GameScreen implements Screen,InputProcessor {
 	private static final int VIRTUAL_WIDTH = 1280;

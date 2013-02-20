@@ -4,7 +4,6 @@ import java.io.InputStream;
 import java.util.Random;
 
 import actors.Cube;
-import actors.Cube.State;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;

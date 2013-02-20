@@ -13,6 +13,7 @@ import com.tacoid.cubearena.Level.LevelState;
 import com.tacoid.cubearena.TileButtonFactory.TileButton;
 import com.tacoid.cubearena.tiles.Tile;
 import com.tacoid.cubearena.tiles.TileType;
+import com.tacoid.cubearena.tiles.Tile.TileState;
 
 public class GameLogic {
 
@@ -30,6 +31,7 @@ public class GameLogic {
 		SHOWING_LEVEL,
 		IDLE,
 		PLACING_TILE,
+		REMOVING_TILE,
 		CHOSING_DIRECTION,
 		LAUNCHING,
 		RUNNING,
@@ -48,6 +50,7 @@ public class GameLogic {
 	private GameCommand command;
 
 	private Tile selectedTile;
+	private Tile previousSelectedTile;
 	
 	private Level level = null;
 	private Cube cube = null;
@@ -103,9 +106,21 @@ public class GameLogic {
 				
 				if(checkedButton != null) {
 					selectedTile = level.getTouchedTile();
-					if(selectedTile != null && selectedTile.isReplaceable()) {
-						state = GameState.PLACING_TILE;
-						level.resetTouch();
+					if(selectedTile != null) {
+						if( selectedTile.isReplaceable()) {
+							state = GameState.PLACING_TILE;
+							level.resetTouch();
+						}
+					}
+				} else {
+					selectedTile = level.getTouchedTile();
+					if(selectedTile != null) {
+						if(selectedTile.isRemovable()) {
+							state = GameState.REMOVING_TILE;
+							level.resetTouch();
+							previousSelectedTile = selectedTile;
+							selectedTile.setState(TileState.FLOATING);
+						}
 					}
 				}
 			}
@@ -124,6 +139,7 @@ public class GameLogic {
 			} else {
 				level.replaceTile(selectedTile, checkedButton.getType());
 				setState(GameState.IDLE);
+				buttonGroup.getChecked().setChecked(false);
 			}
 			break;
 		case CHOSING_DIRECTION:
@@ -150,6 +166,21 @@ public class GameLogic {
 				level.resetTouch();
 			}
 			break;
+		case REMOVING_TILE:
+			if(level.isTouched()) {
+				selectedTile = level.getTouchedTile();
+				if(previousSelectedTile.getX() == selectedTile.getX() &&
+				   previousSelectedTile.getY() == selectedTile.getY()) {
+					level.replaceTile(selectedTile, TileType.EMPTY);
+					
+				} else {
+					previousSelectedTile.setState(TileState.RETURN_TO_ZERO);
+				}
+				setState(GameState.IDLE);
+				level.resetTouch();
+			}
+			break;
+			
 		case LAUNCHING:
 			/* Cette état correpond au moment où l'utilisateur appuis sur le boutton "done" pour lancer le jeu. 
 			 * Avant de lancer vraiment le jeu, on attend que le cube soit IDLE (c'est à dire que son animation d'apparition soit terminée

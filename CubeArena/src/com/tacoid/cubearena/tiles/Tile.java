@@ -4,6 +4,7 @@ import java.io.InputStream;
 import java.util.Random;
 
 import actors.Cube;
+import actors.Cube.State;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
@@ -21,6 +22,8 @@ public abstract class Tile implements Actor3d {
 	
 	public enum TileState {
 		APPEARING,
+		FLOATING,
+		RETURN_TO_ZERO,
 		IDLE
 	};
 	
@@ -61,7 +64,7 @@ public abstract class Tile implements Actor3d {
 		color[2] = color[0];
 		color[3] = 1.0f;
 		
-		speed = 2.0f*(new Random().nextFloat()*0.6f + 0.7f);
+		speed = 1.5f*(new Random().nextFloat()*0.6f + 0.7f);
 		interp = DecelerateInterpolator.$(2.0f);
 		this.setState(TileState.APPEARING);
 		this.direction = Direction.NORTH;
@@ -81,6 +84,7 @@ public abstract class Tile implements Actor3d {
 	public void render(Matrix4 t, float delta) {
 		Matrix4 transform = new Matrix4(t);
 		this.update(delta);
+
 		if(isVisible) {
 			drawTileBase(t,delta);
 	        colorShader.begin();
@@ -111,6 +115,19 @@ public abstract class Tile implements Actor3d {
 				z = 0.0f;
 			}
 			break;
+		case FLOATING:
+				this.t+=4.0*delta;
+				z = (float) (0.1f+ 0.1f*Math.sin(this.t-Math.PI/2));
+				break;
+		case RETURN_TO_ZERO:
+			if(z>0.0f) {
+				z-=0.5f*delta;
+			}
+			if(z<0.0f) {
+				z = 0.0f;
+				state = TileState.IDLE;
+			}
+			break;
 		case IDLE:
 			break;
 		}
@@ -118,8 +135,7 @@ public abstract class Tile implements Actor3d {
 	
 	public void drawTileBase(Matrix4 t, float delta) {
 		Matrix4 transform = new Matrix4(t);
-		
-		this.update(delta);
+
         colorShader.begin();
         {
 	        colorShader.setUniform4fv("u_color", baseColor, 0, 4);
@@ -171,11 +187,19 @@ public abstract class Tile implements Actor3d {
 	}
 
 	public void setState(TileState state) {
+		t = 0.0f;
 		this.state = state;
 	}
 	
 	public boolean isReplaceable() {
 		return (type != TileType.NO_TILE &&
+				type != TileType.START &&
+				type != TileType.END);
+	}
+	
+	public boolean isRemovable() {
+		return (type != TileType.EMPTY &&
+				type != TileType.NO_TILE &&
 				type != TileType.START &&
 				type != TileType.END);
 	}

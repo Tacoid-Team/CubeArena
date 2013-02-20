@@ -100,7 +100,7 @@ public class Cube implements Actor3d {
 	}
 	
 	private void animAppearing(Matrix4 transform, float delta) {
-		t+=0.04f;
+		t+=2.0f*delta;
 		transform.scale(t,t,t);
 		if(t > 1.0f) {
 			t = 0;
@@ -109,28 +109,28 @@ public class Cube implements Actor3d {
 	}
 	
 	private void animFalling(Matrix4 transform, float delta) {
-		t+=5.0f;
-		transform.translate(new Vector3(.0f, -t/50, 0.0f));
+		t+=2.0f*delta;
+		transform.translate(new Vector3(.0f, -t*3.0f, 0.0f));
 		transform.translate(new Vector3(.0f, 0.5f, 0.0f));
 		switch(direction) {
 		case EAST:
-	        transform.rotate(new Vector3(0.0f, 0.0f, 1.0f), -t);
+	        transform.rotate(new Vector3(0.0f, 0.0f, 1.0f), -t*120.0f);
 	        break;
 		case WEST:
-	        transform.rotate(new Vector3(0.0f, 0.0f, 1.0f), t);
+	        transform.rotate(new Vector3(0.0f, 0.0f, 1.0f), t*120.0f);
 	        break;
 		case SOUTH:
-	        transform.rotate(new Vector3(1.0f, 0.0f, 0.0f), t);
+	        transform.rotate(new Vector3(1.0f, 0.0f, 0.0f), t*120.0f);
 			break;
 		case NORTH:
-	        transform.rotate(new Vector3(1.0f, 0.0f, 0.0f), -t);
+	        transform.rotate(new Vector3(1.0f, 0.0f, 0.0f), -t*120.0f);
 			break;
 		}
 		transform.translate(new Vector3(.0f, -0.5f, 0.0f));
 	}
 	
 	private void animPush(Matrix4 transform, float delta) {
-		t+=0.08f;
+		t+=2.0f*delta;
 		switch(activeTile.getDirection()) {
 		case EAST:
 			transform.translate(t, 0.0f, 0.0f);
@@ -162,7 +162,7 @@ public class Cube implements Actor3d {
 	
 	private void animRotate(Matrix4 transform, float delta, boolean left) {
 
-		t+=0.08f;
+		t+=2.0f*delta;
         transform.rotate(new Vector3(0, 1, 0), (left?1:-1)*t*90.0f);
 		if(t > 1.0f) {
 			switch(direction) {
@@ -187,7 +187,7 @@ public class Cube implements Actor3d {
 	private void animRolling(Matrix4 transform, float delta) {
         
         //transform.rotate(new Vector3(1, 0, 0), 90);
-		t+=0.05f;
+		t+=2.0f*delta;
 		
 		switch(direction) {
 		case EAST:

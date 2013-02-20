@@ -104,6 +104,9 @@ public class TileButtonFactory {
 		
 		@Override
 		public void draw (SpriteBatch batch, float parentAlpha) {
+			if(GameLogic.getInstance().getInventory().getAmount(type) == 0) {
+				this.setChecked(false);
+			}
 			if(isChecked())
 				this.x = 20;
 			else

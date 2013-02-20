@@ -137,6 +137,7 @@ public class GameLogic {
 				directionSelector.setVisible(true);
 				setState(GameState.CHOSING_DIRECTION);
 			} else {
+				inventory.removeTile( checkedButton.getType(), 1);
 				level.replaceTile(selectedTile, checkedButton.getType());
 				setState(GameState.IDLE);
 				buttonGroup.getChecked().setChecked(false);
@@ -159,11 +160,14 @@ public class GameLogic {
 					break;
 				}
 				
+				inventory.removeTile( checkedButton.getType(), 1);
 				level.replaceTile(selectedTile, checkedButton.getType());
 				level.getTile(selectedTile.getX(), selectedTile.getY()).setDirection(d);
 				setState(GameState.IDLE);
 				directionSelector.setVisible(false);
 				level.resetTouch();
+				buttonGroup.getChecked().setChecked(false);
+				
 			}
 			break;
 		case REMOVING_TILE:
@@ -171,6 +175,7 @@ public class GameLogic {
 				selectedTile = level.getTouchedTile();
 				if(previousSelectedTile.getX() == selectedTile.getX() &&
 				   previousSelectedTile.getY() == selectedTile.getY()) {
+					inventory.addTile( selectedTile.getType(), 1);
 					level.replaceTile(selectedTile, TileType.EMPTY);
 					
 				} else {

@@ -130,7 +130,7 @@ public class Cube implements Actor3d {
 	}
 	
 	private void animPush(Matrix4 transform, float delta) {
-		t+=2.0f*delta;
+		t+=3.0f*delta;
 		switch(activeTile.getDirection()) {
 		case EAST:
 			transform.translate(t, 0.0f, 0.0f);
@@ -162,7 +162,7 @@ public class Cube implements Actor3d {
 	
 	private void animRotate(Matrix4 transform, float delta, boolean left) {
 
-		t+=2.0f*delta;
+		t+=4.0f*delta;
         transform.rotate(new Vector3(0, 1, 0), (left?1:-1)*t*90.0f);
 		if(t > 1.0f) {
 			switch(direction) {

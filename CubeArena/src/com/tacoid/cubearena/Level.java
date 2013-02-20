@@ -1,7 +1,5 @@
 package com.tacoid.cubearena;
 
-import actors.Cube;
-import actors.Cube.State;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -10,6 +8,8 @@ import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Plane;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.Ray;
+import com.tacoid.cubearena.actors.Cube;
+import com.tacoid.cubearena.actors.Cube.State;
 import com.tacoid.cubearena.tiles.Tile;
 import com.tacoid.cubearena.tiles.TileFactory;
 import com.tacoid.cubearena.tiles.TileType;

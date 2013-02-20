@@ -1,4 +1,4 @@
-package actors;
+package com.tacoid.cubearena.actors;
 
 import java.io.InputStream;
 

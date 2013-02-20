@@ -3,7 +3,6 @@ package com.tacoid.cubearena.tiles;
 import java.io.InputStream;
 import java.util.Random;
 
-import actors.Cube;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
@@ -16,6 +15,7 @@ import com.badlogic.gdx.scenes.scene2d.interpolators.DecelerateInterpolator;
 import com.tacoid.cubearena.Actor3d;
 import com.tacoid.cubearena.Direction;
 import com.tacoid.cubearena.ShaderManager;
+import com.tacoid.cubearena.actors.Cube;
 
 public abstract class Tile implements Actor3d {
 	

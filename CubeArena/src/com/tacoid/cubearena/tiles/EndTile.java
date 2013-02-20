@@ -1,11 +1,11 @@
 package com.tacoid.cubearena.tiles;
 
-import actors.Cube;
 
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Matrix4;
 import com.tacoid.cubearena.CubeArena;
+import com.tacoid.cubearena.actors.Cube;
 
 
 public class EndTile extends Tile {

@@ -1,12 +1,12 @@
 package com.tacoid.cubearena.tiles;
 
-import actors.Cube;
-import actors.Cube.State;
 
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Matrix4;
 import com.tacoid.cubearena.CubeArena;
+import com.tacoid.cubearena.actors.Cube;
+import com.tacoid.cubearena.actors.Cube.State;
 
 
 public class PushTile extends Tile {

@@ -1,8 +1,8 @@
 package com.tacoid.cubearena.tiles;
 
-import actors.Cube;
-import actors.Cube.State;
 import com.badlogic.gdx.math.Matrix4;
+import com.tacoid.cubearena.actors.Cube;
+import com.tacoid.cubearena.actors.Cube.State;
 
 
 public class EmptyTile extends Tile {

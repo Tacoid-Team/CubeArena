@@ -83,14 +83,16 @@ public class Cube implements Actor3d {
 					animFalling(transform, delta);
 					break;
 				case APPEARING:
-					animAppearing(transform, delta);
+					animAppearing(transform, delta, false);
 					break;
 				case PUSH:
 					animPush(transform, delta);
 					break;
-				case IDLE:
+				
 				case VANISHING:
+					animAppearing(transform, delta, true);
 					break;
+				case IDLE:
 				}
 				shader.setUniformMatrix("u_projView", transform);
 				mesh.render(shader, GL20.GL_TRIANGLES);
@@ -99,9 +101,15 @@ public class Cube implements Actor3d {
 		}
 	}
 	
-	private void animAppearing(Matrix4 transform, float delta) {
+	private void animAppearing(Matrix4 transform, float delta, boolean vanish) {
 		t+=2.0f*delta;
-		transform.scale(t,t,t);
+		float f;
+		if(vanish) {
+			f = 1-t;
+		} else {
+			f= t;
+		}
+		transform.scale(f,f,f);
 		if(t > 1.0f) {
 			t = 0;
 			state = State.IDLE;

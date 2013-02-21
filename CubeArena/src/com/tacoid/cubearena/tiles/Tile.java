@@ -14,6 +14,7 @@ import com.badlogic.gdx.scenes.scene2d.Interpolator;
 import com.badlogic.gdx.scenes.scene2d.interpolators.DecelerateInterpolator;
 import com.tacoid.cubearena.Actor3d;
 import com.tacoid.cubearena.Direction;
+import com.tacoid.cubearena.GameLogic;
 import com.tacoid.cubearena.ShaderManager;
 import com.tacoid.cubearena.actors.Cube;
 
@@ -22,16 +23,20 @@ public abstract class Tile implements Actor3d {
 	public enum TileState {
 		APPEARING,
 		FLOATING,
+		CHANGING_UP,
+		CHANGING_DOWN,
 		RETURN_TO_ZERO,
 		IDLE
 	};
 	
 	protected TileType type;
+	protected TileType newType;
 	protected TileState state;
 	protected Direction direction;
 
 	protected int x,y;
 	private float z;
+	private float basez;
 	private float baseScale;
 	private final float color[];
 	protected boolean isVisible;
@@ -106,12 +111,14 @@ public abstract class Tile implements Actor3d {
 		switch(getState()) {
 		case APPEARING:
 			t+=delta/speed;
-			z = 8-8*interp.getInterpolation(t); 
+			z = 8-8*interp.getInterpolation(t);
+			basez = -(8-8*interp.getInterpolation(t));
 			//z = 5.0f*t-5;
 			if(t >= 1.0f) {
 				setState(TileState.IDLE);
 				t = 0;
 				z = 0.0f;
+				basez = 0.0f;
 			}
 			break;
 		case FLOATING:
@@ -129,6 +136,26 @@ public abstract class Tile implements Actor3d {
 			break;
 		case IDLE:
 			break;
+		case CHANGING_DOWN:
+			if(z>0.0f) {
+				z-=delta * 15.0f;
+			} else {
+				z = 0.0f;
+			}
+			break;
+		case CHANGING_UP:
+			if(z<10.0f) {
+				z+=delta * 15.0f;
+			} else {
+				
+				Tile t = GameLogic.getInstance().getLevel().replaceTile(this, newType);
+				t.setState(TileState.CHANGING_DOWN);
+				t.z = 10.0f;
+				state = TileState.CHANGING_DOWN;
+			}
+			break;
+		default:
+			break;
 		}
 	}
 	
@@ -138,7 +165,7 @@ public abstract class Tile implements Actor3d {
         colorShader.begin();
         {
 	        colorShader.setUniform4fv("u_color", baseColor, 0, 4);
-	        transform.translate(x, -getZ()-0.3f, -y);
+	        transform.translate(x, basez-0.3f, -y);
 	        transform.scale(1.0f, baseScale, 1.0f);
 	        
 			colorShader.setUniformMatrix("u_projView", transform);
@@ -201,5 +228,10 @@ public abstract class Tile implements Actor3d {
 				type != TileType.NO_TILE &&
 				type != TileType.START &&
 				type != TileType.END);
+	}
+
+	public void changeType(TileType type) {
+		newType = type;
+		state = TileState.CHANGING_UP;
 	}
 }

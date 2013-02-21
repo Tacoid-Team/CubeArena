@@ -141,12 +141,13 @@ public class Level implements Actor3d {
 		}
 	}
 	
-	public void replaceTile(Tile oldTile, TileType newTileType) {
+	public Tile replaceTile(Tile oldTile, TileType newTileType) {
 		int x = oldTile.getX();
 		int y = oldTile.getY();
 		
 		/*XXX: C'est temporaire. En faisant ça, l'ancienne tile disparait instantanément, c'est très laid */
 		level[x][y] = TileFactory.createNewTile(newTileType, x, y);
+		return level[x][y];
 	}
 
 	

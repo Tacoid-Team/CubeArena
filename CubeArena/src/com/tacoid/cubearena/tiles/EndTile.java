@@ -5,7 +5,10 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Matrix4;
 import com.tacoid.cubearena.CubeArena;
+import com.tacoid.cubearena.GameLogic;
+import com.tacoid.cubearena.GameLogic.GameState;
 import com.tacoid.cubearena.actors.Cube;
+import com.tacoid.cubearena.actors.Cube.State;
 
 
 public class EndTile extends Tile {
@@ -33,8 +36,8 @@ public class EndTile extends Tile {
 	}
 	@Override
 	public void react(Cube cube) {
-		// TODO Auto-generated method stub
-		
+		cube.setState(State.VANISHING);
+		GameLogic.getInstance().setState(GameState.WIN);
 	}
 
 }

@@ -93,9 +93,11 @@ public class GameLogic {
 			 * - Si le joueur appuis sur "Done", on lance le cube avec l'état START
 			 * - Si le joueur selectionne un type de tile puis une tile, alors on lance le placement de tile avec l'état PLACING_TILE
 			 */
-			
+			//getCube().setVisible(false);
 			if(command == GameCommand.START) {
 				/* TODO: cacher le menu d'édition et afficher le boutton stop */
+				
+				command = GameCommand.NONE; /* La commande est traitée, on reset */
 				System.out.println("new state: Lauching");
 				cube = new Cube();
 				cube.setX(level.getStart().getX());
@@ -138,7 +140,10 @@ public class GameLogic {
 				setState(GameState.CHOSING_DIRECTION);
 			} else {
 				inventory.removeTile( checkedButton.getType(), 1);
+				/*
 				level.replaceTile(selectedTile, checkedButton.getType());
+				*/
+				selectedTile.changeType(checkedButton.getType());
 				setState(GameState.IDLE);
 				buttonGroup.getChecked().setChecked(false);
 			}
@@ -161,7 +166,7 @@ public class GameLogic {
 				}
 				
 				inventory.removeTile( checkedButton.getType(), 1);
-				level.replaceTile(selectedTile, checkedButton.getType());
+				selectedTile.changeType(checkedButton.getType());
 				level.getTile(selectedTile.getX(), selectedTile.getY()).setDirection(d);
 				setState(GameState.IDLE);
 				directionSelector.setVisible(false);
@@ -176,7 +181,7 @@ public class GameLogic {
 				if(previousSelectedTile.getX() == selectedTile.getX() &&
 				   previousSelectedTile.getY() == selectedTile.getY()) {
 					inventory.addTile( selectedTile.getType(), 1);
-					level.replaceTile(selectedTile, TileType.EMPTY);
+					selectedTile.changeType(TileType.EMPTY);
 					
 				} else {
 					previousSelectedTile.setState(TileState.RETURN_TO_ZERO);
@@ -228,7 +233,11 @@ public class GameLogic {
 	        }
 			break;
 		case WIN:
-			/* Hell yeah, todo*/
+			System.out.println("You won!");
+			if(getCube().getState() == State.IDLE) {
+				setState(GameState.IDLE);
+				getCube().setVisible(false);
+			}
 			break;
         
         }      

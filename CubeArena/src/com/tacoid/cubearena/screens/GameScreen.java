@@ -32,6 +32,9 @@ public class GameScreen implements Screen,InputProcessor {
 	
 	/* 2D Part */
 	Stage stage;
+	
+	Table inventoryTable;
+	Table runTable;
 
 	static private GameScreen instance = null;
 	
@@ -48,6 +51,8 @@ public class GameScreen implements Screen,InputProcessor {
 			setClickListener(new ClickListener() {
 				@Override
 				public void click(Actor actor, float x, float y) {
+					runTable.visible = true;
+					inventoryTable.visible = false;
 					GameLogic.getInstance().start();
 				}
 			});
@@ -62,6 +67,8 @@ public class GameScreen implements Screen,InputProcessor {
 			setClickListener(new ClickListener() {
 				@Override
 				public void click(Actor actor, float x, float y) {
+					runTable.visible = false;
+					inventoryTable.visible = true;
 					GameLogic.getInstance().stop();
 				}
 			});
@@ -82,25 +89,31 @@ public class GameScreen implements Screen,InputProcessor {
 											       0, 0, 0, 0, 
 											       font, new Color(0.0f, 0.0f, 0.0f, 1f),new Color(0.0f, 0.0f, 0.0f, 1f),new Color(0.0f, 0.0f, 0.0f, 1f));
 		
-		Table table = new Table();
-
-		table.setFillParent(true);
-		table.debug(); // turn on all debug lines (table, cell, and widget)
-		stage.addActor(table);
-
 		GameLogic.getInstance().loadLevel(LevelFactory.getLevel(0));
+		ButtonGroup bgroup = GameLogic.getInstance().getButtonGroup(); /* A faire après l'initialisation de gamelogic, vu que ça se base sur le contenu de l'inventory qui est initialisé dans gamelogic */
 		
-		/* A faire après l'initialisation de gamelogic, vu que ça se base sur le contenu de l'inventory qui est initialisé dans gamelogic */
-		ButtonGroup bgroup = GameLogic.getInstance().getButtonGroup();
-		
+		inventoryTable = new Table();
+		inventoryTable.setFillParent(true);
+		inventoryTable.debug(); // turn on all debug lines (table, cell, and widget)
 		for(Button but : bgroup.getButtons()) {
-			table.add(but).top();
-			table.row();
+			inventoryTable.add(but).top();
+			inventoryTable.row();
 		}
-		table.add( new DoneButton(style)).left().padLeft(5);
-		table.row();
-		table.add( new StopButton(style)).left().padLeft(5);
-		table.left().bottom();
+		inventoryTable.add( new DoneButton(style)).left();
+		inventoryTable.row();
+		inventoryTable.left().bottom();
+
+		stage.addActor(inventoryTable);
+		
+		
+		runTable = new Table();
+		runTable.setFillParent(true);
+		runTable.debug();
+		runTable.add( new StopButton(style)).left();
+		runTable.left().bottom();
+		stage.addActor(runTable);
+		
+		runTable.visible = false;
 		
 		Gdx.graphics.getGL20().glEnable(GL20.GL_CULL_FACE);
 		Gdx.graphics.getGL20().glEnable(GL20.GL_DEPTH_TEST);
@@ -135,7 +148,6 @@ public class GameScreen implements Screen,InputProcessor {
         	logic.getCube().render(transform, delta);
         }
         
-
         logic.getLevel().render(transform, delta);
         
         logic.getDirectionSelector().render(transform, delta);
@@ -143,7 +155,7 @@ public class GameScreen implements Screen,InputProcessor {
         Gdx.graphics.getGL20().glDisable(GL20.GL_CULL_FACE);
         
         stage.draw();
-       // Table.drawDebug(stage);
+        //Table.drawDebug(stage);
 	}
 
 	@Override

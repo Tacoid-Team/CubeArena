@@ -41,10 +41,4 @@ public class Inventory {
 	public Set<TileType> getTileList() {
 		return inventory.keySet();
 	}
-	
-	private void dump() {
-		for(TileType t : inventory.keySet()) {
-			System.out.println(t + " : " + inventory.get(t) );
-		}
-	}
 }

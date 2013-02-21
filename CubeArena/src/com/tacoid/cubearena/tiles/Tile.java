@@ -31,8 +31,10 @@ public abstract class Tile implements Actor3d {
 	
 	protected TileType type;
 	protected TileType newType;
-	protected TileState state;
 	protected Direction direction;
+	protected Direction newDirection;
+	protected TileState state;
+
 
 	protected int x,y;
 	private float z;
@@ -150,6 +152,7 @@ public abstract class Tile implements Actor3d {
 				
 				Tile t = GameLogic.getInstance().getLevel().replaceTile(this, newType);
 				t.setState(TileState.CHANGING_DOWN);
+				t.setDirection(newDirection);
 				t.z = 10.0f;
 				state = TileState.CHANGING_DOWN;
 			}
@@ -230,8 +233,9 @@ public abstract class Tile implements Actor3d {
 				type != TileType.END);
 	}
 
-	public void changeType(TileType type) {
+	public void changeType(TileType type, Direction direction) {
 		newType = type;
+		newDirection = direction;
 		state = TileState.CHANGING_UP;
 	}
 }

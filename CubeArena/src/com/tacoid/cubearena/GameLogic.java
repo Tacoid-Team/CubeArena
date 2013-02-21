@@ -143,7 +143,7 @@ public class GameLogic {
 				/*
 				level.replaceTile(selectedTile, checkedButton.getType());
 				*/
-				selectedTile.changeType(checkedButton.getType());
+				selectedTile.changeType(checkedButton.getType(), Direction.NORTH);
 				setState(GameState.IDLE);
 				buttonGroup.getChecked().setChecked(false);
 			}
@@ -166,8 +166,7 @@ public class GameLogic {
 				}
 				
 				inventory.removeTile( checkedButton.getType(), 1);
-				selectedTile.changeType(checkedButton.getType());
-				level.getTile(selectedTile.getX(), selectedTile.getY()).setDirection(d);
+				selectedTile.changeType(checkedButton.getType(),d);
 				setState(GameState.IDLE);
 				directionSelector.setVisible(false);
 				level.resetTouch();
@@ -181,7 +180,7 @@ public class GameLogic {
 				if(previousSelectedTile.getX() == selectedTile.getX() &&
 				   previousSelectedTile.getY() == selectedTile.getY()) {
 					inventory.addTile( selectedTile.getType(), 1);
-					selectedTile.changeType(TileType.EMPTY);
+					selectedTile.changeType(TileType.EMPTY, Direction.NORTH);
 					
 				} else {
 					previousSelectedTile.setState(TileState.RETURN_TO_ZERO);

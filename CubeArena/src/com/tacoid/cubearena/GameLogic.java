@@ -140,6 +140,9 @@ public class GameLogic {
 				setState(GameState.CHOSING_DIRECTION);
 			} else {
 				inventory.removeTile( checkedButton.getType(), 1);
+				if(selectedTile.getType() != TileType.EMPTY) {
+					inventory.addTile(selectedTile.getType(), 1);
+				}
 				/*
 				level.replaceTile(selectedTile, checkedButton.getType());
 				*/
@@ -166,6 +169,9 @@ public class GameLogic {
 				}
 				
 				inventory.removeTile( checkedButton.getType(), 1);
+				if(selectedTile.getType() != TileType.EMPTY) {
+					inventory.addTile(selectedTile.getType(), 1);
+				}
 				selectedTile.changeType(checkedButton.getType(),d);
 				setState(GameState.IDLE);
 				directionSelector.setVisible(false);

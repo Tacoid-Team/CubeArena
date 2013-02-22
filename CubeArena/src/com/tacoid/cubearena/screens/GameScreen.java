@@ -9,7 +9,9 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Matrix4;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
@@ -35,6 +37,16 @@ public class GameScreen implements Screen,InputProcessor {
 	
 	Table inventoryTable;
 	Table runTable;
+	float zoomFactor;
+	
+	 // for pinch-to-zoom
+	 int numberOfFingers = 0;
+	 int fingerOnePointer;
+	 int fingerTwoPointer;
+	 float lastDistance = 0;
+	 Vector3 fingerOne = new Vector3();
+	 Vector3 fingerTwo = new Vector3();
+	 float camx,camy;
 
 	static private GameScreen instance = null;
 	
@@ -79,8 +91,12 @@ public class GameScreen implements Screen,InputProcessor {
 		stage = new Stage(VIRTUAL_WIDTH, VIRTUAL_HEIGHT, true);
 		
 		Gdx.graphics.getGL20().glViewport(0,0,VIRTUAL_WIDTH, VIRTUAL_HEIGHT);
-		cam = new OrthographicCamera(12, 12*768.0f/1280.0f ,35.264f);	
-		cam.translate(-2.0f, 5.0f, 2.0f);
+		
+		zoomFactor = 9.0f;
+		camx = -2.0f;
+		camy = 2.0f;
+		cam = new OrthographicCamera(zoomFactor, zoomFactor*768.0f/1280.0f ,35.264f);	
+		cam.translate(camx, 5.0f, camy);
 		
 		BitmapFont font = new BitmapFont();
 		font.scale(1.0f);
@@ -172,6 +188,8 @@ public class GameScreen implements Screen,InputProcessor {
 
 	@Override
 	public void pause() {
+		 // some error prevention...
+		 numberOfFingers = 0;
 	}
 
 	@Override
@@ -199,17 +217,84 @@ public class GameScreen implements Screen,InputProcessor {
 
 	@Override
 	public boolean touchDown(int x, int y, int pointer, int button) {
+		 // for pinch-to-zoom
+		 numberOfFingers++;
+		 if(numberOfFingers == 1)
+		 {
+		        fingerOnePointer = pointer;
+		        fingerOne.set(x, y, 0);
+		 }
+		 else if(numberOfFingers == 2)
+		 {
+		        fingerTwoPointer = pointer;
+		        fingerTwo.set(x, y, 0);
+		 
+		       float distance = fingerOne.dst(fingerTwo);
+		        lastDistance = distance;
+		 }
 		return stage.touchDown(x, y, pointer, button);
 	}
 
 	@Override
-	public boolean touchDragged(int arg0, int arg1, int arg2) {
-		return stage.touchDragged(arg0, arg1, arg2);
+	public boolean touchDragged(int x, int y, int pointer) {
+		 // for pinch-to-zoom
+		if(numberOfFingers >=2) {
+		 if (pointer == fingerOnePointer) {
+		        fingerOne.set(x, y, 0);
+		 }
+		 if (pointer == fingerTwoPointer) {
+		        fingerTwo.set(x, y, 0);
+		 }
+		 
+		float distance = fingerOne.dst(fingerTwo);
+		 float factor = distance / lastDistance;
+		 
+
+		 System.out.println(zoomFactor);
+
+		if (lastDistance != distance) {
+			 zoomFactor += (1.0f- factor);
+			 zoomFactor = MathUtils.clamp(zoomFactor, 6, 16);
+		/*	 cam.viewportHeight = zoomFactor;
+		     cam.viewportWidth = zoomFactor*768.0f/1280.0f;*/
+
+		 } 
+		}
+		else {
+			float dx = fingerOne.x - x;
+			float dy = fingerOne.y - y;
+			System.out.println("dx="+dx+" dy="+dy);
+			camx += 0.707107*(dx-dy) *0.01f;
+			camy += 0.707107*(dx+dy) *0.01f;
+			
+			fingerOne.set(x, y, 0);
+		}
+		
+		cam = new OrthographicCamera(zoomFactor, zoomFactor*768.0f/1280.0f ,35.264f);	
+		cam.translate(camx, 5.0f, camy);
+		
+		return stage.touchDragged(x, y, pointer);
+		
 	}
 
 
 	@Override
 	public boolean touchUp(int x, int y, int pointer, int button) {
+		 // for pinch-to-zoom           
+		 if(numberOfFingers == 1)
+		 {
+		        Vector3 touchPoint = new Vector3(x, y, 0);
+		        cam.unproject(touchPoint);
+		 }
+		 numberOfFingers--;
+		 
+		// just some error prevention... clamping number of fingers (ouch! :-)
+		 if(numberOfFingers<0){
+		        numberOfFingers = 0;
+		 }
+		 
+
+		lastDistance = 0;
 		return stage.touchUp(x, y, pointer, button);
 	}
 

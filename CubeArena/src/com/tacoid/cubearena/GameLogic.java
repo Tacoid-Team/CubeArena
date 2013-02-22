@@ -139,13 +139,9 @@ public class GameLogic {
 				directionSelector.setVisible(true);
 				setState(GameState.CHOSING_DIRECTION);
 			} else {
-				inventory.removeTile( checkedButton.getType(), 1);
-				if(selectedTile.getType() != TileType.EMPTY) {
-					inventory.addTile(selectedTile.getType(), 1);
-				}
-				/*
-				level.replaceTile(selectedTile, checkedButton.getType());
-				*/
+
+
+				replaceTile(selectedTile, checkedButton.getType());
 				selectedTile.changeType(checkedButton.getType(), Direction.NORTH);
 				setState(GameState.IDLE);
 				buttonGroup.getChecked().setChecked(false);
@@ -168,11 +164,7 @@ public class GameLogic {
 					break;
 				}
 				
-				inventory.removeTile( checkedButton.getType(), 1);
-				if(selectedTile.getType() != TileType.EMPTY) {
-					inventory.addTile(selectedTile.getType(), 1);
-				}
-				selectedTile.changeType(checkedButton.getType(),d);
+				replaceTile(selectedTile, checkedButton.getType(), d);
 				setState(GameState.IDLE);
 				directionSelector.setVisible(false);
 				level.resetTouch();
@@ -185,9 +177,7 @@ public class GameLogic {
 				selectedTile = level.getTouchedTile();
 				if(previousSelectedTile.getX() == selectedTile.getX() &&
 				   previousSelectedTile.getY() == selectedTile.getY()) {
-					inventory.addTile( selectedTile.getType(), 1);
-					selectedTile.changeType(TileType.EMPTY, Direction.NORTH);
-					
+					replaceTile(selectedTile, TileType.EMPTY);				
 				} else {
 					previousSelectedTile.setState(TileState.RETURN_TO_ZERO);
 				}
@@ -248,6 +238,18 @@ public class GameLogic {
         }      
 	}
 	
+	public void replaceTile(Tile tile, TileType newtype) {
+		replaceTile(tile, newtype, Direction.NORTH);
+	}
+	
+	public void replaceTile(Tile tile, TileType newType, Direction dir) {
+		inventory.removeTile( newType, 1);
+		if(tile.getType() != TileType.EMPTY) {
+			inventory.addTile(tile.getType(), 1);
+		}
+		tile.changeType(newType, dir);
+	}
+	
 	public void start() {
 		command = GameCommand.START;
 	}
@@ -264,6 +266,7 @@ public class GameLogic {
 		
 		inventory.addTile(TileType.PUSH, 1);
 		inventory.addTile(TileType.ROTATE_RIGHT, 2);
+		inventory.addTile(TileType.TELEPORT, 2);
 		
 		buttonGroup = new ButtonGroup();
 		buttonGroup.setMinCheckCount(0);

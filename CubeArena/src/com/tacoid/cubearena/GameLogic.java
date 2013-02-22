@@ -262,8 +262,6 @@ public class GameLogic {
 		level = new Level(newLevel);
 		inventory = new Inventory();
 
-
-		
 		inventory.addTile(TileType.PUSH, 1);
 		inventory.addTile(TileType.ROTATE_RIGHT, 2);
 		inventory.addTile(TileType.TELEPORT, 2);

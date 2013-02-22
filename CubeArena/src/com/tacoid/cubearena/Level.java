@@ -10,6 +10,7 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.Ray;
 import com.tacoid.cubearena.actors.Cube;
 import com.tacoid.cubearena.actors.Cube.State;
+import com.tacoid.cubearena.tiles.TeleportTile;
 import com.tacoid.cubearena.tiles.Tile;
 import com.tacoid.cubearena.tiles.TileFactory;
 import com.tacoid.cubearena.tiles.TileType;
@@ -38,8 +39,7 @@ public class Level implements Actor3d {
 	/* On conserve les références de certaines tiles, comme les End/Start, et les téléporteurs */
 	private Tile start;
 	private Tile end;
-	private Tile tp1;
-	private Tile tp2;
+	private Tile[] tp;
 	
 	private boolean touched;
 	private int touchedX;
@@ -56,8 +56,7 @@ public class Level implements Actor3d {
 		this.level = new Tile[levelData.dimX][levelData.dimY];
 		start = null;
 		end = null;
-		tp1 = null;
-		tp2 = null;
+		tp = new Tile[2];
 		for(int i=0; i<this.level.length; i++) {
 			for(int j=0; j<this.level[i].length; j++) {
 				this.level[i][j] = TileFactory.createNewTile(TileType.fromValue(levelData.data[i][j]), i, j);
@@ -66,11 +65,7 @@ public class Level implements Actor3d {
 				} else if(this.level[i][j].getType() == TileType.START) {
 					start = this.level[i][j];
 				} else if(this.level[i][j].getType() == TileType.TELEPORT) {
-					if(tp1 == null) {
-						tp1 = this.level[i][j];
-					} else {
-						tp2 = this.level[i][j];
-					}
+					addTeleport(this.level[i][j]);
 				}
 			}
 		}
@@ -145,12 +140,42 @@ public class Level implements Actor3d {
 		int x = oldTile.getX();
 		int y = oldTile.getY();
 		
-		/*XXX: C'est temporaire. En faisant ça, l'ancienne tile disparait instantanément, c'est très laid */
+		if(oldTile.getType() == TileType.TELEPORT) {
+			 removeTeleport(oldTile);
+		}
+		
 		level[x][y] = TileFactory.createNewTile(newTileType, x, y);
+
+		if(newTileType == TileType.TELEPORT) {
+			addTeleport(level[x][y]);
+		}
 		return level[x][y];
 	}
-
 	
+	public void addTeleport(Tile t) {
+		if(t instanceof TeleportTile) {
+			TeleportTile tpTile = (TeleportTile) t;
+			if(tp[0] == null) {
+				tp[0] = tpTile;
+				tpTile.setId(0);
+			} else {
+				tp[1] = tpTile;
+				tpTile.setId(1);
+			}
+		}
+	}
+	
+	public void removeTeleport(Tile t) {
+		if(t instanceof TeleportTile) {
+			TeleportTile tpTile = (TeleportTile) t;
+			tp[tpTile.getId()] = null;
+		}
+	}
+	
+	public Tile getTeleport(int id) {
+		return tp[id];
+	}
+
 	public Tile getStart() {
 		return start;
 	}
@@ -165,22 +190,6 @@ public class Level implements Actor3d {
 
 	public void setEnd(Tile end) {
 		this.end = end;
-	}
-
-	public Tile getTp1() {
-		return tp1;
-	}
-
-	public void setTp1(Tile tp1) {
-		this.tp1 = tp1;
-	}
-
-	public Tile getTp2() {
-		return tp2;
-	}
-
-	public void setTp2(Tile tp2) {
-		this.tp2 = tp2;
 	}
 
 	public LevelState getState() {
